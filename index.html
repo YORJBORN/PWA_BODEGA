@@ -143,8 +143,7 @@ function render(){const h=$('#h'),m=$('#m');
 function vRes(b){
  const r=b.p.map(p=>{const s=stock(b,p),w=CF(b).filter(x=>x.c[p.id]!=null).pop(),low=p.min>0&&s<=p.min;
   return `<tr class="${low?'low':''}"><td>${esc(p.n)} <small>(${p.u||'unidad'})</small>${low?' ⚠️':''}<td>${+(p.ini+tot(b,p,'in')).toFixed(2)}<td>${tot(b,p,'out')}<td><b>${s}</b><td>${w?`${w.c[p.id]} <small>(${w.f})</small>`:'–'}<td>${ed(p.id)}${trb(`delP('${p.id}')`)}</tr>`}).join('');
- return `${formE(b)}<div class=sc><table><tr><th>Producto<th>Inicial + reposiciones<th>Retirado<th>Stock actual<th>Últ. conteo<th></tr>${r}</table></div>
- ${formP(b)}
+ return `${formE(b)}${formP(b)}<div class=sc><table><tr><th>Producto<th>Inicial + reposiciones<th>Retirado<th>Stock actual<th>Últ. conteo<th></tr>${r}</table></div>
  <p class=mu>⚠️ = stock igual o bajo el mínimo definido.</p>`}
 
 // Conteo físico: lo contado es lo que queda; la diferencia contra el stock anterior se registra como retiro
@@ -188,7 +187,7 @@ function vRepo(b){
 const formP=b=>`<form class=row onsubmit="addP(event)"><input id=pn placeholder="${b.t==='herr'?'Herramienta':'Producto'}" required><select id=pu><option value=unidad>Unidad</option><option value=kit>Kit</option></select><input id=pi type=number min=0 step=any placeholder="${b.t==='herr'?'Cantidad total':'Cant. inicial'}" required>${b.t==='herr'?'':'<input id=pm type=number min=0 step=any placeholder="Mínimo (opcional)">'}<button>Agregar</button></form>`;
 function vResH(b){
  const r=b.p.map(p=>`<tr><td>${esc(p.n)} <small>(${p.u||'unidad'})</small><td><b>${stock(b,p)}</b><td>${trb(`delP('${p.id}')`)}</tr>`).join('');
- return `<div class=sc><table><tr><th>Herramienta<th>Total<th></tr>${r}</table></div>${formP(b)}
+ return `${formP(b)}<div class=sc><table><tr><th>Herramienta<th>Total<th></tr>${r}</table></div>
  <p class=mu>Para agregar, quitar o cambiar un nombre usa Ajustes (queda registrado con su motivo).</p>`}
 function vAj(b){
  if(!b.p.length)return '<p class=mu>Agrega herramientas primero en Resumen.</p>';
