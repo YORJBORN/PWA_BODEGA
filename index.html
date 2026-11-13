@@ -27,12 +27,18 @@ nav{flex-wrap:wrap}nav button{font-size:.85rem;padding:9px 4px}
 .ib{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border-radius:50%;background:rgba(255,255,255,.22);color:#fff}.ib.del{background:#fff;color:#dc2626}
 .tr{background:transparent;color:#dc2626;padding:4px 6px;display:inline-flex;align-items:center}
 .ed{background:transparent;color:var(--ac);padding:4px 6px;display:inline-flex;align-items:center}
-button,input,select{min-height:44px}.ib{width:44px;height:44px}.tr,.ed{min-width:44px;justify-content:center}
-.it{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:8px 0}.it.low{background:var(--lo)}
-.it .t{display:flex;align-items:center;gap:6px}.it .t b{flex:1;word-break:break-word}.num{font-size:1.5rem;font-weight:700}
+.it{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin:8px 0;cursor:pointer}.it.low{background:var(--lo)}
+.it .t{display:flex;align-items:center;gap:6px}.it .t b{flex:1;word-break:break-word}.num{font-size:1.4rem;font-weight:700}
 .kv{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:4px;font-size:.88rem;color:var(--mu)}.kv b{color:var(--fg)}
-#pn,#nb,#en,#q,#an{flex-basis:100%}input[type=search]{width:100%}
-@media(max-width:600px){main{padding:10px 10px 40px}nav button{font-size:.78rem;padding:8px 2px}.sc table{font-size:.85rem}}
+input[type=search]{width:100%;padding-right:44px}input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.sb{position:relative}.qc{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;padding:0;border-radius:50%;background:transparent;color:var(--mu);font-size:1.1rem;line-height:1}
+.sec{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;padding:16px 18px;margin:0 0 14px;border-radius:16px;color:#fff;background:linear-gradient(135deg,#0b4f4a 0%,#0f766e 55%,#0d9488 100%);box-shadow:0 8px 20px rgba(15,118,110,.30)}
+.sec.nx{margin-top:28px}
+.sec::before{content:"";position:absolute;right:-26px;top:-34px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.14)}
+.sec::after{content:"";position:absolute;right:46px;bottom:-40px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.10)}
+.sec .ic{flex:none;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.sec .tx{position:relative;z-index:1;display:flex;flex-direction:column;line-height:1.2}.sec .tx b{font-size:1.5rem;font-weight:800;letter-spacing:.3px;text-shadow:0 1px 3px rgba(0,0,0,.35)}.sec .tx small{font-size:1.02rem;font-weight:600;color:#fff;opacity:1;margin-top:3px;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+@media(prefers-color-scheme:dark){.sec{box-shadow:0 8px 20px rgba(0,0,0,.45)}}
 </style></head><body>
 <header id="h"></header><main id="m"></main>
 <script>
@@ -56,26 +62,28 @@ function runMap(b){const q={},r={};b.p.forEach(p=>q[p.id]=p.ini);
  [...b.mov].sort((x,y)=>key(x).localeCompare(key(y))).forEach(m=>{q[m.p]=+((q[m.p]??0)+(m.t==='in'?m.q:-m.q)).toFixed(2);r[m.id]=q[m.p]});return r}
 
 const nz=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-function doS(){const r=$('#sr');if(!r)return;const t=nz(qs).split(/\s+/).filter(Boolean);if(!t.length){r.innerHTML='';return}
+function clrS(){qs='';const q=$('#q');if(q){q.value='';q.focus()}doS()}
+function doS(){const r=$('#sr');if(!r)return;const c=$('#qc');if(c)c.style.display=qs?'':'none';const t=nz(qs).split(/\s+/).filter(Boolean);if(!t.length){r.innerHTML='';return}
  const it=[];db.b.forEach(b=>{const hit=x=>t.every(w=>nz(x+' '+b.n).includes(w));
   b.p.forEach(p=>{if(hit(p.n))it.push(`<div class="it ${b.t!=='herr'&&p.min>0&&stock(b,p)<=p.min?'low':''}" onclick="openB('${b.id}')"><div class=t><b>${esc(p.n)}</b><span class=num>${stock(b,p)}</span></div><div class=kv><span>📦 <b>${esc(b.n)}</b></span><span>${b.t==='herr'?'Herramienta · total':'Insumo · '+(p.u||'unidad')}</span></div></div>`)});
   if(!b.p.length&&hit(''))it.push(`<div class=it onclick="openB('${b.id}')"><div class=t><b>${esc(b.n)}</b></div><div class=kv>Bodega sin ítems</div></div>`)});
  r.innerHTML=it.length?`<h3>Resultados (${it.length})</h3>`+it.join(''):'<p class=mu>Sin resultados.</p>'}
 
 function render(){const h=$('#h'),m=$('#m');
- if(!cur){h.innerHTML='<h1>📦 Mis bodegas</h1>';
-  m.innerHTML=`<input type=search id=q placeholder="🔍 Buscar insumo, herramienta o bodega" value="${esc(qs)}" oninput="qs=this.value;doS()"><div id=sr></div><form class=row onsubmit="addB(event)"><input id=nb placeholder="Nombre de la bodega" required><select id=nt><option value=ins>Insumos (consumo y reposición)</option><option value=herr>Herramientas (conteo)</option></select><button>Crear</button></form>`+
+ if(!cur){h.style.display='none';h.innerHTML='';
+  m.innerHTML=`<div class=sec><span class=ic>🔍</span><span class=tx><b>Buscar</b><small>Encuentra insumos, herramientas y bodegas</small></span></div><div class=sb><input type=search id=q placeholder="Buscar insumo, herramienta o bodega" value="${esc(qs)}" oninput="qs=this.value;doS()"><button type=button id=qc class=qc onclick="clrS()" aria-label="Borrar búsqueda" title="Borrar búsqueda">✕</button></div><div id=sr></div><div class="sec nx"><span class=ic>📦</span><span class=tx><b>Mis bodegas</b><small>Crea, abre y organiza tus bodegas</small></span></div><form class=row onsubmit="addB(event)"><input id=nb placeholder="Nombre de la bodega" required><select id=nt><option value=ins>Insumos (consumo y reposición)</option><option value=herr>Herramientas (conteo)</option></select><button>Crear</button></form>`+
   (db.b.length?db.b.map(b=>`<div class=card onclick="openB('${b.id}')"><b>${esc(b.n)}</b><small>${b.t==='herr'?'Herramientas':'Insumos'} · ${b.p.length} ítems</small></div>`).join(''):'<p class=mu>Aún no hay bodegas. Crea la primera.</p>');doS();return}
- const b=B();
+ const b=B();h.style.display='';
  h.innerHTML=`<button class=ib onclick="cur=null;render()" title="Volver" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><h1>${esc(b.n)}</h1><button class="ib" onclick="renB()" title="Renombrar bodega" aria-label="Renombrar bodega"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button><button class="ib del" onclick="delB()" title="Eliminar bodega" aria-label="Eliminar bodega"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg></button>`;
  const T=b.t==='herr'?[['res','Resumen',vResH],['aj','Ajustes',vAj],['inf','Informe',vInf]]:[['res','Resumen',vRes],['cnt','Conteo',vCnt],['rep','Reposición',vRepo],['inf','Informe',vInf]];
  m.innerHTML=`<nav>${T.map(([k,l])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';msg='';editing=null;render()">${l}</button>`).join('')}</nav>`+T.find(t=>t[0]===tab)[2](b)}
 
 function vRes(b){
  const r=b.p.map(p=>{const s=stock(b,p),w=CF(b).filter(x=>x.c[p.id]!=null).pop(),low=p.min>0&&s<=p.min;
-  return `<div class="it ${low?'low':''}"><div class=t><b>${esc(p.n)} <small>(${p.u||'unidad'})</small>${low?' ⚠️':''}</b><span class=num>${s}</span>${ed(p.id)}${trb(`delP('${p.id}')`)}</div>
-  <div class=kv><span>Inicial + reposiciones: <b>${+(p.ini+tot(b,p,'in')).toFixed(2)}</b></span><span>Retirado: <b>${tot(b,p,'out')}</b></span><span>Últ. conteo: <b>${w?w.f:'–'}</b></span></div></div>`}).join('');
- return `${formE(b)}${r||'<p class=mu>Aún no hay insumos.</p>'}${formP(b)}<p class=mu>El número grande es lo que queda. ⚠️ = igual o bajo el mínimo.</p>`}
+  return `<tr class="${low?'low':''}"><td>${esc(p.n)} <small>(${p.u||'unidad'})</small>${low?' ⚠️':''}<td>${+(p.ini+tot(b,p,'in')).toFixed(2)}<td>${tot(b,p,'out')}<td><b>${s}</b><td>${w?`${w.c[p.id]} <small>(${w.f})</small>`:'–'}<td>${ed(p.id)}${trb(`delP('${p.id}')`)}</tr>`}).join('');
+ return `${formE(b)}<div class=sc><table><tr><th>Producto<th>Inicial + reposiciones<th>Retirado<th>Stock actual<th>Últ. conteo<th></tr>${r}</table></div>
+ ${formP(b)}
+ <p class=mu>⚠️ = stock igual o bajo el mínimo definido.</p>`}
 
 // Conteo físico: lo contado es lo que queda; la diferencia contra el stock anterior se registra como retiro
 const CF=b=>[...(b.cf||[])].sort((x,y)=>(x.f+x.h).localeCompare(y.f+y.h)),cmin=(p,c)=>p.min>0&&c<=p.min,
@@ -84,11 +92,11 @@ function vCnt(b){
  if(!b.p.length)return EMPTY;
  const cf=CF(b),last=cf[cf.length-1];let est='';
  if(last){
-  const cards=b.p.map(p=>{const c=last.c[p.id];if(c==null)return '';const low=cmin(p,c),falta=Math.max(0,+(p.ini-c).toFixed(2));
-   return `<div class="it ${low?'low':''}"><div class=t><b>${esc(p.n)} <small>(${p.u||'unidad'})</small>${low?' ⚠️ Reponer':''}</b><span class=num>${c}</span></div>
-   <div class=kv><span>Retirado en este conteo: <b>${ret(b,last,p)}</b></span><span>Retirado total: <b>${tot(b,p,'out')}</b></span>${p.min>0?`<span>Mínimo: <b>${p.min}</b></span>`:''}<span>Para completar: <b>${falta}</b></span></div></div>`}).join('');
+  const rows=b.p.map(p=>{const c=last.c[p.id];if(c==null)return '';const low=cmin(p,c),falta=Math.max(0,+(p.ini-c).toFixed(2));
+   return `<tr class="${low?'low':''}"><td>${esc(p.n)} <small>(${p.u||'unidad'})</small>${low?' ⚠️ Reponer':''}<td><b>${c}</b><td>${ret(b,last,p)}<td>${tot(b,p,'out')}<td>${p.min>0?p.min:'–'}<td>${falta}</tr>`}).join('');
+  const cards=`<div class=sc><table><tr><th>Producto<th>Quedan<th>Retirado en este conteo<th>Retirado total<th>Mínimo<th>Para completar</tr>${rows}</table></div>`;
   const hist=cf.slice(-6),mat=`<div class=sc><table><tr><th>Producto${hist.map(x=>`<th>${x.f}`).join('')}</tr>${b.p.map(p=>`<tr><td>${esc(p.n)}${hist.map(x=>{const c=x.c[p.id],r=c==null?0:ret(b,x,p);return `<td>${c==null?'–':c}${r?` <small>(−${r})</small>`:''}`}).join('')}</tr>`).join('')}</table></div>`;
-  est=`<h3>Lo que queda · conteo del ${last.f}</h3>${cards}<small class=mu>Número grande = lo que queda. Para completar = cantidad inicial − lo que queda.</small>
+  est=`<h3>Lo que queda · conteo del ${last.f}</h3>${cards}<small class=mu>Para completar = cantidad inicial − lo que queda.</small>
   <div class=noprint><button class=ghost onclick="tab='rep';msg='';render()">➕ Ir a Reposición</button></div>
   ${cf.length>1?`<h3>Historial de conteos <small>(entre paréntesis lo retirado)</small></h3>${mat}`:''}`}
  const form=`<h3>${last?'Hacer un nuevo conteo':'Hacer el primer conteo'}</h3><form onsubmit="addC(event)">
@@ -117,8 +125,9 @@ function vRepo(b){
 
 const formP=b=>`<form class=row onsubmit="addP(event)"><input id=pn placeholder="${b.t==='herr'?'Herramienta':'Producto'}" required><select id=pu><option value=unidad>Unidad</option><option value=kit>Kit</option></select><input id=pi type=number min=0 step=any placeholder="${b.t==='herr'?'Cantidad total':'Cant. inicial'}" required>${b.t==='herr'?'':'<input id=pm type=number min=0 step=any placeholder="Mínimo (opcional)">'}<button>Agregar</button></form>`;
 function vResH(b){
- const r=b.p.map(p=>`<div class=it><div class=t><b>${esc(p.n)} <small>(${p.u||'unidad'})</small></b><span class=num>${stock(b,p)}</span>${trb(`delP('${p.id}')`)}</div></div>`).join('');
- return `${r||'<p class=mu>Aún no hay herramientas.</p>'}${formP(b)}<p class=mu>El número es el total. Para agregar, quitar o cambiar un nombre usa Ajustes (queda registrado con su motivo).</p>`}
+ const r=b.p.map(p=>`<tr><td>${esc(p.n)} <small>(${p.u||'unidad'})</small><td><b>${stock(b,p)}</b><td>${trb(`delP('${p.id}')`)}</tr>`).join('');
+ return `<div class=sc><table><tr><th>Herramienta<th>Total<th></tr>${r}</table></div>${formP(b)}
+ <p class=mu>Para agregar, quitar o cambiar un nombre usa Ajustes (queda registrado con su motivo).</p>`}
 function vAj(b){
  if(!b.p.length)return '<p class=mu>Agrega herramientas primero en Resumen.</p>';
  const run=runMap(b),rows=b.mov.map(m=>({k:key(m),h:`<tr><td>${m.f} ${m.h}<td>${esc(pn(b,m.p))}<td>${m.t==='in'?'+':'−'}${m.q}<td>${esc(m.o)}<td>${run[m.id]}<td>${trb(`delM('${m.id}')`)}</tr>`})).concat((b.tl||[]).map(t=>({k:t.f+t.h,h:`<tr><td>${t.f} ${t.h}<td>${esc(pn(b,t.p))}<td>${t.rn?`Nombre: ${esc(t.rn[0])} → ${esc(t.rn[1])}`:`Total ${t.a} → ${t.n}`}<td>${esc(t.o)}<td>–<td></tr>`}))).sort((x,y)=>y.k.localeCompare(x.k)).slice(0,80).map(x=>x.h).join('');
