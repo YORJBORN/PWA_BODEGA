@@ -50,6 +50,7 @@ input[type=search]{width:100%;padding-right:44px}input[type=search]::-webkit-sea
 .crt{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(var(--sh),.10)}.crt #nb{flex-basis:100%}.crt select,.crt button{flex:1 1 0;min-width:0;text-overflow:ellipsis}.hint{flex-basis:100%;font-size:.85rem;line-height:1.3}
 .it{border-radius:14px;border-left:5px solid var(--ac)}
 body{overflow-x:hidden}
+.bk{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.bk>*{flex:1 1 150px;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 10px;border-radius:12px;cursor:pointer;font:inherit;text-align:center;border:2px solid var(--ac)}.bk .imp{background:var(--card);color:var(--fg)}
 @media(max-width:480px){.sec{padding:13px 12px;gap:10px;border-radius:14px}.sec .ic{width:42px;height:42px;font-size:1.35rem}.sec .tx b{font-size:1.3rem}.sec .tx small{font-size:.9rem}.ab{width:38px;height:38px}.bc{padding:12px;gap:12px}.bi{width:46px;height:46px}.crt{padding:10px}.sec.nx{margin-top:22px}}
 .seg{display:flex;gap:8px}.seg button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border:2px solid var(--bd);background:var(--card);color:var(--fg);border-radius:14px}.seg button span{font-size:1.4rem}.seg button.on{border-color:var(--ac);background:var(--ac);color:var(--on)}
 .pal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.sw{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border:2px solid var(--bd);background:var(--card);color:var(--fg);border-radius:14px}.sw i{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-weight:800;font-size:1.3rem;box-shadow:0 4px 10px rgba(0,0,0,.25)}.sw.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
@@ -101,7 +102,33 @@ function vCfg(){
  return `<div class=sec><button class=ic onclick="cfg=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Configuración</b><small>Elige el modo y el color de la app</small></span></div>
  <h3>Modo</h3><div class=seg>${modes.map(([k,i,l])=>`<button class="${UI.m===k?'on':''}" onclick="setUI('m','${k}')"><span>${i}</span>${l}</button>`).join('')}</div><p class=mu>${info[UI.m]}</p>
  <h3>Color</h3><div class=pal>${PAL.map(([k,n,a,b])=>`<button class="sw ${UI.c===k?'on':''}" onclick="setUI('c','${k}')" aria-label="${n}"><i style="background:linear-gradient(135deg,${a},${b})">${UI.c===k?'✓':''}</i><span>${n}</span></button>`).join('')}</div>
- <p class=mu>El color se aplica a toda la app, tanto en modo claro como oscuro.</p>`}
+ <p class=mu>El color se aplica a toda la app, tanto en modo claro como oscuro.</p>
+ <h3>Copia de seguridad</h3>
+ <p class=mu>Guarda todas tus bodegas, conteos, movimientos y ajustes en un archivo. Úsalo antes de desinstalar o reinstalar la app, o para pasar tus datos a otro celular.</p>
+ <p class=mu>Datos actuales: <b>${db.b.length}</b> bodegas · <b>${db.b.reduce((a,x)=>a+x.p.length,0)}</b> ítems · Última copia exportada: <b>${lastBk()}</b></p>
+ <div class=bk><button onclick="expB()">⬇️ Exportar copia</button><label class=imp>⬆️ Importar copia<input type=file accept=".json,application/json" onchange="impB(this)" hidden></label></div>
+ <div id=bkm></div>`}
+const lastBk=()=>{try{return localStorage.getItem('inv-bk')||'nunca'}catch(e){return 'nunca'}},bkm=t=>{const e=$('#bkm');if(e)e.innerHTML=t},
+ bkBad=t=>bkm(`<div class="ban bad">${t}</div>`);
+async function expB(){
+ const name=`inventario-respaldo-${today()}.json`,f=new File([JSON.stringify({app:'inventario-bodega',v:1,fecha:new Date().toISOString(),db})],name,{type:'application/json'}),
+  ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ try{
+  if(ios&&navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Respaldo de inventario'});
+  else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+  try{localStorage.setItem('inv-bk',today())}catch(e){}
+  bkm(`<div class="ban ok">✅ Copia exportada: <b>${name}</b>. Guárdala en un lugar seguro (Descargas, Drive, WhatsApp a ti mismo…).</div>`)
+ }catch(e){if(!e||e.name!=='AbortError')bkBad('No se pudo exportar la copia.')}}
+async function impB(inp){
+ const f=inp.files[0];inp.value='';if(!f)return;
+ let d;try{d=JSON.parse(await f.text())}catch(e){return bkBad('El archivo no es una copia válida.')}
+ const x=d&&d.db&&Array.isArray(d.db.b)?d.db:d&&Array.isArray(d.b)?d:null,
+  ok=x&&x.b.every(b=>b&&typeof b.id==='string'&&typeof b.n==='string'&&['ins','herr'].includes(b.t)&&Array.isArray(b.p)&&Array.isArray(b.mov)&&b.p.every(q=>q&&typeof q.id==='string'&&typeof q.n==='string'));
+ if(!ok)return bkBad('El archivo no tiene el formato de una copia de este inventario. No se cambió nada.');
+ const it=x.b.reduce((a,b)=>a+b.p.length,0);
+ if(!confirm(`Se reemplazarán TODOS los datos actuales (${db.b.length} bodegas) por los de la copia (${x.b.length} bodegas, ${it} ítems${d.fecha?', del '+String(d.fecha).slice(0,10):''}). ¿Continuar?`))return;
+ x.b.forEach(b=>{b.cf=Array.isArray(b.cf)?b.cf:[]});db=x;cur=null;save();render();
+ bkm(`<div class="ban ok">✅ Copia importada: ${x.b.length} bodegas y ${it} ítems.</div>`)}
 
 function render(){const h=$('#h'),m=$('#m');
  if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=vCfg();return}
