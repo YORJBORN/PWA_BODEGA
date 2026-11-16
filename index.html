@@ -6,11 +6,6 @@
 <style>
 :root{--bg:#f6f7f8;--fg:#1a1d21;--card:#fff;--bd:#dde1e5;--ac:#0f766e;--mu:#6b7480;--lo:#fde8e8;--on:#fff;--g1:#0b4f4a;--g2:#0f766e;--g3:#0d9488;--sh:15,118,110}
 html.dark{--bg:#14171a;--fg:#e8eaed;--card:#1e2226;--bd:#333a41;--ac:#2dd4bf;--mu:#97a0ab;--lo:#4a2323;--on:#04211d}
-html[data-c=azul]{--bg:#f3f6fc;--ac:#1d4ed8;--g1:#172554;--g2:#1d4ed8;--g3:#3b82f6;--sh:29,78,216}html.dark[data-c=azul]{--bg:#0f1522;--ac:#60a5fa}
-html[data-c=violeta]{--bg:#f6f3fc;--ac:#7c3aed;--g1:#2e1065;--g2:#6d28d9;--g3:#8b5cf6;--sh:109,40,217}html.dark[data-c=violeta]{--bg:#17131f;--ac:#a78bfa}
-html[data-c=naranja]{--bg:#fdf6f0;--ac:#c2410c;--g1:#7c2d12;--g2:#c2410c;--g3:#f97316;--sh:194,65,12}html.dark[data-c=naranja]{--bg:#1c1512;--ac:#fb923c}
-html[data-c=rosa]{--bg:#fcf3f6;--ac:#be185d;--g1:#500724;--g2:#be185d;--g3:#ec4899;--sh:190,24,93}html.dark[data-c=rosa]{--bg:#1d1318;--ac:#f472b6}
-html[data-c=grafito]{--bg:#f3f4f6;--ac:#334155;--g1:#0f172a;--g2:#334155;--g3:#64748b;--sh:51,65,85}html.dark[data-c=grafito]{--bg:#15171a;--ac:#94a3b8}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 header{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--ac);color:#fff}header h1{flex:1;margin:0;font-size:1.2rem}
 main{max-width:860px;margin:auto;padding:12px 16px 40px}
@@ -50,10 +45,37 @@ input[type=search]{width:100%;padding-right:44px}input[type=search]::-webkit-sea
 .crt{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(var(--sh),.10)}.crt #nb{flex-basis:100%}.crt select,.crt button{flex:1 1 0;min-width:0;text-overflow:ellipsis}.hint{flex-basis:100%;font-size:.85rem;line-height:1.3}
 .it{border-radius:14px;border-left:5px solid var(--ac)}
 body{overflow-x:hidden}
+#pl{flex-basis:100%}
+.seg.w{flex-wrap:wrap}.seg.w button{flex:1 1 28%;padding:12px 4px}.ban .bk{margin-top:10px}
+.top{display:flex;gap:10px;align-items:stretch;margin:0 0 14px}.top .sec{flex:1;margin:0;justify-content:center;padding:14px 12px}.sec.c .tx{flex:none;align-items:center;text-align:center}
+.tbox{flex:none;position:relative;width:62px;padding:0;border:0;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--g1) 0%,var(--g2) 55%,var(--g3) 100%);box-shadow:0 8px 20px rgba(var(--sh),.32)}.tbox svg{width:26px;height:26px}
+.tbox .bd{position:absolute;top:-7px;right:-7px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:#dc2626;color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+.cnt{flex:none;min-width:34px;height:34px;padding:0 9px;border-radius:17px;background:var(--ac);color:var(--on);font-weight:800;display:flex;align-items:center;justify-content:center}
+.tgl{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:14px;cursor:pointer;margin:8px 0}.tgl span{flex:1;font-weight:600}
+.tgl i{flex:none;position:relative;width:50px;height:28px;border-radius:14px;background:var(--bd);transition:.2s}.tgl i::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}.tgl.on i{background:var(--ac)}.tgl.on i::after{left:25px}
+.nt{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:8px 0;background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--ac);border-radius:14px}.nt.low{border-left-color:#dc2626;background:var(--lo);cursor:pointer}
+.nt .ni{flex:none;font-size:1.5rem}.nt .nx{flex:1;min-width:0;display:flex;flex-direction:column}.nt .nx b{overflow-wrap:anywhere}.nt .nx small{color:var(--mu)}
+.cp{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:6px 0;background:var(--card);border:1px solid var(--bd);border-radius:12px}.cp span{flex:1;min-width:0}.cp button{padding:8px 10px;font-size:.9rem}
+.it .num{max-width:50%;text-align:right;overflow-wrap:anywhere}
 .bk{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.bk>*{flex:1 1 150px;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 10px;border-radius:12px;cursor:pointer;font:inherit;text-align:center;border:2px solid var(--ac)}.bk .imp{background:var(--card);color:var(--fg)}
 @media(max-width:480px){.sec{padding:13px 12px;gap:10px;border-radius:14px}.sec .ic{width:42px;height:42px;font-size:1.35rem}.sec .tx b{font-size:1.3rem}.sec .tx small{font-size:.9rem}.ab{width:38px;height:38px}.bc{padding:12px;gap:12px}.bi{width:46px;height:46px}.crt{padding:10px}.sec.nx{margin-top:22px}}
 .seg{display:flex;gap:8px}.seg button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border:2px solid var(--bd);background:var(--card);color:var(--fg);border-radius:14px}.seg button span{font-size:1.4rem}.seg button.on{border-color:var(--ac);background:var(--ac);color:var(--on)}
-.pal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.sw{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border:2px solid var(--bd);background:var(--card);color:var(--fg);border-radius:14px}.sw i{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-weight:800;font-size:1.3rem;box-shadow:0 4px 10px rgba(0,0,0,.25)}.sw.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
+
+/* ---- Efecto cristal: superficies translúcidas con desenfoque y fondo verdoso ---- */
+:root{--card:rgba(255,255,255,.55);--bd:rgba(15,118,110,.24);--lo:rgba(254,202,202,.65)}
+html.dark{--card:rgba(24,38,36,.55);--bd:rgba(255,255,255,.14);--lo:rgba(127,29,29,.5)}
+html{background:var(--bg)}body{background:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 45% at 12% 8%,rgba(20,184,166,.40),transparent 70%),radial-gradient(55% 40% at 92% 30%,rgba(52,211,153,.32),transparent 70%),radial-gradient(60% 45% at 25% 95%,rgba(15,118,110,.34),transparent 70%),linear-gradient(160deg,#e4f5f1,#f3faf8)}
+html.dark body::before{background:radial-gradient(60% 45% at 12% 8%,rgba(20,184,166,.30),transparent 70%),radial-gradient(55% 40% at 92% 30%,rgba(16,185,129,.22),transparent 70%),radial-gradient(60% 45% at 25% 95%,rgba(13,148,136,.28),transparent 70%),linear-gradient(160deg,#061210,#0c1e1b)}
+.card,.it,.bc,.crt,.tgl,.nt,.cp,.sc,nav button,.seg button,.bk .imp,input,select,.ghost{-webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5)}
+.bc,.crt,.tgl,.nt,.cp,.it{box-shadow:0 6px 18px rgba(var(--sh),.14),inset 0 1px 0 rgba(255,255,255,.35)}
+th{background:rgba(15,118,110,.14)}
+.ban{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}.ban.ok{background:rgba(209,250,229,.78)}.ban.bad{background:rgba(254,226,226,.8)}
+.rp{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.sec,.tbox{background:linear-gradient(135deg,rgba(11,79,74,.82) 0%,rgba(15,118,110,.72) 55%,rgba(13,148,136,.64) 100%);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.28)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root{--card:rgba(255,255,255,.92)}html.dark{--card:rgba(24,38,36,.92)}}
+@media(prefers-reduced-transparency:reduce){:root{--card:rgba(255,255,255,.96)}html.dark{--card:rgba(24,38,36,.96)}*{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+@media print{html{background:#fff}body::before{display:none!important}*{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
 </style></head><body>
 <header id="h"></header><main id="m"></main>
 <script>
@@ -66,11 +88,13 @@ const today=()=>new Date().toLocaleDateString('sv'),B=()=>db.b.find(x=>x.id===cu
 const W=b=>[...b.sem].sort((x,y)=>x.f.localeCompare(y.f)),pn=(b,id)=>(b.p.find(p=>p.id===id)||{n:'(eliminado)'}).n;
 const key=m=>m.f+m.h,EMPTY='<p class=mu>Agrega productos primero en Resumen.</p>';
 const TR='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>',trb=f=>`<button class=tr onclick="${f}" title="Eliminar" aria-label="Eliminar">${TR}</button>`;
-let cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
+let ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
 
 // Stock = inicial + reposiciones (entradas) − retiros (salidas), hasta la fecha d (opcional)
 function stockAt(b,p,d){let q=p.ini;b.mov.forEach(m=>{if(m.p===p.id&&(!d||m.f<=d))q+=m.t==='in'?m.q:-m.q});return +q.toFixed(2)}
 const stock=(b,p)=>stockAt(b,p);
+const qd=(b,p)=>p.txt?esc(p.txt):stock(b,p),
+ tlT=t=>t.rn?`Nombre: ${esc(t.rn[0])} → ${esc(t.rn[1])}`:t.lc?`Ubicación: ${esc(t.lc[0])} → ${esc(t.lc[1])}`:t.cq?`Cantidad: ${esc(t.cq[0])} → ${esc(t.cq[1])}`:`Total ${t.a} → ${t.n}`;
 const tot=(b,p,t)=>+b.mov.filter(m=>m.p===p.id&&m.t===t).reduce((a,m)=>a+m.q,0).toFixed(2);
 // stock que quedó después de cada movimiento
 function runMap(b){const q={},r={};b.p.forEach(p=>q[p.id]=p.ini);
@@ -80,43 +104,82 @@ const nz=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCas
 function clrS(){qs='';const q=$('#q');if(q){q.value='';q.focus()}doS()}
 function doS(){const r=$('#sr');if(!r)return;const c=$('#qc');if(c)c.style.display=qs?'':'none';const t=nz(qs).split(/\s+/).filter(Boolean);if(!t.length){r.innerHTML='';return}
  const it=[];db.b.forEach(b=>{const hit=x=>t.every(w=>nz(x+' '+b.n).includes(w));
-  b.p.forEach(p=>{if(hit(p.n))it.push(`<div class="it ${b.t!=='herr'&&p.min>0&&stock(b,p)<=p.min?'low':''}" onclick="openB('${b.id}')"><div class=t><b>${esc(p.n)}</b><span class=num>${stock(b,p)}</span></div><div class=kv><span>📦 <b>${esc(b.n)}</b></span><span>${b.t==='herr'?'Herramienta · total':'Insumo · '+(p.u||'unidad')}</span></div></div>`)});
+  b.p.forEach(p=>{if(hit(p.n+' '+(p.l||'')))it.push(`<div class="it ${b.t!=='herr'&&p.min>0&&stock(b,p)<=p.min?'low':''}" onclick="openB('${b.id}')"><div class=t><b>${esc(p.n)}</b><span class=num>${b.t==='herr'?qd(b,p):stock(b,p)}</span></div><div class=kv><span>📦 <b>${esc(b.n)}</b></span>${b.t==='herr'&&p.l?`<span>📍 <b>${esc(p.l)}</b></span>`:''}<span>${b.t==='herr'?'Herramienta · total':'Insumo · '+(p.u||'unidad')}</span></div></div>`)});
   if(!b.p.length&&hit(''))it.push(`<div class=it onclick="openB('${b.id}')"><div class=t><b>${esc(b.n)}</b></div><div class=kv>Bodega sin ítems</div></div>`)});
  r.innerHTML=it.length?`<h3>Resultados (${it.length})</h3>`+it.join(''):'<p class=mu>Sin resultados.</p>'}
 
-const PAL=[['verde','Verde','#0f766e','#14b8a6'],['azul','Azul','#1d4ed8','#3b82f6'],['violeta','Violeta','#6d28d9','#8b5cf6'],['naranja','Naranja','#c2410c','#f97316'],['rosa','Rosa','#be185d','#ec4899'],['grafito','Grafito','#334155','#64748b']],UI={c:'verde',m:'auto'},
+const UI={m:'auto'},
  mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false},
  IC=(d,w)=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`,
  BACK=IC('<path d="M19 12H5M12 19l-7-7 7-7"/>',2.5),PEN=IC('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',2.2),
  GEAR=IC('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',2);
 try{Object.assign(UI,JSON.parse(localStorage.getItem('inv-ui')||'{}'))}catch(e){}
-if(!PAL.some(x=>x[0]===UI.c))UI.c='verde';if(!['auto','light','dark'].includes(UI.m))UI.m='auto';
-function applyUI(){const r=document.documentElement;r.classList.toggle('dark',UI.m==='dark'||(UI.m==='auto'&&mq.matches));r.dataset.c=UI.c;
- const t=document.querySelector('meta[name=theme-color]');if(t)t.content=PAL.find(x=>x[0]===UI.c)[2]}
+if(!['auto','light','dark'].includes(UI.m))UI.m='auto';
+function applyUI(){const r=document.documentElement;r.classList.toggle('dark',UI.m==='dark'||(UI.m==='auto'&&mq.matches));const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#0f766e'}
 if(mq.addEventListener)mq.addEventListener('change',()=>{if(UI.m==='auto')applyUI()});
 applyUI();
 function setUI(k,v){UI[k]=v;try{localStorage.setItem('inv-ui',JSON.stringify(UI))}catch(e){}applyUI();render()}
+const AFO=[['d','Diariamente'],['w','Semanalmente'],['m','Mensualmente']],AFN={d:'diaria',w:'semanal',m:'mensual'},
+ AINFO={d:'Se crea una copia una vez al día, al abrir la app.',w:'Se crea una copia cada 7 días, al abrir la app.',m:'Se crea una copia una vez al mes, al abrir la app.'},
+ AK='inv-auto',SK='inv-snaps',NK='inv-notif',NS='inv-notif-seen',
+ AUTO=()=>{let r={};try{r=JSON.parse(localStorage.getItem(AK)||'{}')||{}}catch(e){}
+  const o=Object.assign({on:false,f:'d',last:'',pend:false},r);if(r.on===undefined&&r.f)o.on=r.f!=='off';if(!AFN[o.f])o.f=o.f==='y'?'m':'d';return o},
+ setAUTO=a=>{try{localStorage.setItem(AK,JSON.stringify(a))}catch(e){}},
+ SNAPS=()=>{try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){return []}},
+ snapTxt=x=>JSON.stringify({app:'inventario-bodega',v:1,fecha:x.t,db:x.d}),
+ dueNow=a=>{if(!a.on)return false;if(!a.last)return true;const t=today(),l=a.last;
+  return a.f==='d'?t!==l:a.f==='w'?(new Date(t)-new Date(l))/864e5>=7:t.slice(0,7)!==l.slice(0,7)},
+ bkBan=()=>{const a=AUTO();return a.pend?`<div class="ban ok"><b>💾 Copia automática lista</b> (${a.last}). Guárdala como archivo para no perderla si reinstalas la app.<div class=bk><button onclick="pendSave()">⬇️ Guardar archivo</button><button class=imp onclick="pendNo()">Ahora no</button></div></div>`:''},
+ BELL=IC('<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',2.2),
+ NLOG=()=>{try{return JSON.parse(localStorage.getItem(NK)||'[]')}catch(e){return []}},
+ notif=m=>{try{localStorage.setItem(NK,JSON.stringify([{id:uid(),f:today(),h:hh(),m},...NLOG()].slice(0,30)))}catch(e){}},
+ unseen=()=>{let s='';try{s=localStorage.getItem(NS)||''}catch(e){}const L=NLOG(),i=L.findIndex(x=>x.id===s);return i<0?L.length:i},
+ markSeen=()=>{try{const L=NLOG();if(L[0])localStorage.setItem(NS,L[0].id)}catch(e){}},
+ lowItems=()=>{const r=[];db.b.forEach(b=>{if(b.t==='herr')return;b.p.forEach(p=>{const q=stock(b,p);if(q<7)r.push({b,p,q})})});return r.sort((x,y)=>x.q-y.q)},
+ bellBadge=()=>{const n=unseen()+lowItems().length;return n?`<span class=bd>${n>99?'99+':n}</span>`:''};
+function vNtf(){const L=NLOG(),lo=lowItems();
+ return `<div class=sec><button class=ic onclick="ntf=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Notificaciones</b></span></div>
+ <h3>Copias de seguridad</h3>${L.length?L.map(x=>`<div class=nt><span class=ni>💾</span><span class=nx><b>${esc(x.m)}</b><small>${x.f} · ${x.h}</small></span></div>`).join(''):'<p class=mu>Aún no se ha realizado ninguna copia de seguridad.</p>'}
+ <h3>Insumos con stock bajo (menos de 7)</h3>${lo.length?lo.map(({b,p,q})=>`<div class="nt low" onclick="ntf=false;openB('${b.id}')"><span class=ni>⚠️</span><span class=nx><b>${esc(p.n)}</b><small>${esc(b.n)} · quedan ${q}</small></span></div>`).join(''):'<p class=mu>Todos los insumos tienen 7 o más.</p>'}`}
+function snap(label){const L=SNAPS().filter(x=>label||x.l||x.f!==today()),x={f:today(),t:new Date().toISOString(),n:db.b.length,d:JSON.parse(JSON.stringify(db))};if(label)x.l=label;
+ const keep=[x,...L].slice(0,6);
+ for(;;){try{localStorage.setItem(SK,JSON.stringify(keep));return true}catch(e){if(keep.length<=1)return false;keep.pop()}}}
+function autoBk(){const a=AUTO();if(!dueNow(a)||!db.b.length)return false;if(!snap())return false;a.last=today();a.pend=true;setAUTO(a);notif(`Copia automática creada (${AFN[a.f]})`);return true}
+function setAO(v){const a=AUTO();a.on=v;if(v)a.last='';else a.pend=false;setAUTO(a);if(v)autoBk();render()}
+function setAF(f){const a=AUTO();a.f=f;setAUTO(a);autoBk();render()}
+async function pendSave(){const x=SNAPS().find(y=>!y.l)||SNAPS()[0];if(!x)return;
+ try{await saveFile(snapTxt(x),`inventario-respaldo-${x.f}.json`);notif('Copia automática guardada como archivo');const a=AUTO();a.pend=false;setAUTO(a);render()}catch(e){if(e&&e.name!=='AbortError')alert('No se pudo guardar el archivo')}}
+function pendNo(){const a=AUTO();a.pend=false;setAUTO(a);render()}
+async function dlSnap(i){const x=SNAPS()[i];if(!x)return;
+ try{await saveFile(snapTxt(x),`inventario-respaldo-${x.f}.json`);notif('Copia guardada como archivo');bkm(`<div class="ban ok">✅ Copia del ${x.f} lista para guardar.</div>`)}catch(e){if(!e||e.name!=='AbortError')bkBad('No se pudo exportar la copia.')}}
+function rsSnap(i){const x=SNAPS()[i];if(!x)return;
+ if(!confirm(`Se reemplazarán TODOS los datos actuales por la copia del ${x.f} (${x.n} bodegas). Antes se guardará una copia de lo actual. ¿Continuar?`))return;
+ const d=x.d;snap('Antes de restaurar');d.b.forEach(b=>{b.cf=Array.isArray(b.cf)?b.cf:[]});db=d;cur=null;save();render();bkm(`<div class="ban ok">✅ Copia del ${x.f} restaurada.</div>`)}
 function vCfg(){
- const modes=[['auto','🌗','Automático'],['light','☀️','Claro'],['dark','🌙','Oscuro']],
+ const a=AUTO(),sn=SNAPS(),modes=[['auto','🌗','Automático'],['light','☀️','Claro'],['dark','🌙','Oscuro']],
   info={auto:'Automático: cambia solo entre claro y oscuro según el sistema de tu dispositivo.',light:'Siempre en modo claro.',dark:'Siempre en modo oscuro.'};
- return `<div class=sec><button class=ic onclick="cfg=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Configuración</b><small>Elige el modo y el color de la app</small></span></div>
+ return `<div class=sec><button class=ic onclick="cfg=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Configuración</b><small>Modo de la app y copia de seguridad</small></span></div>
  <h3>Modo</h3><div class=seg>${modes.map(([k,i,l])=>`<button class="${UI.m===k?'on':''}" onclick="setUI('m','${k}')"><span>${i}</span>${l}</button>`).join('')}</div><p class=mu>${info[UI.m]}</p>
- <h3>Color</h3><div class=pal>${PAL.map(([k,n,a,b])=>`<button class="sw ${UI.c===k?'on':''}" onclick="setUI('c','${k}')" aria-label="${n}"><i style="background:linear-gradient(135deg,${a},${b})">${UI.c===k?'✓':''}</i><span>${n}</span></button>`).join('')}</div>
- <p class=mu>El color se aplica a toda la app, tanto en modo claro como oscuro.</p>
- <h3>Copia de seguridad</h3>
- <p class=mu>Guarda todas tus bodegas, conteos, movimientos y ajustes en un archivo. Úsalo antes de desinstalar o reinstalar la app, o para pasar tus datos a otro celular.</p>
+ <h3>Copia manual</h3>
+ <p class=mu>Guarda todas tus bodegas, conteos, movimientos y ajustes en un archivo cuando quieras. Úsalo antes de desinstalar o reinstalar la app, o para pasar tus datos a otro celular.</p>
  <p class=mu>Datos actuales: <b>${db.b.length}</b> bodegas · <b>${db.b.reduce((a,x)=>a+x.p.length,0)}</b> ítems · Última copia exportada: <b>${lastBk()}</b></p>
  <div class=bk><button onclick="expB()">⬇️ Exportar copia</button><label class=imp>⬆️ Importar copia<input type=file accept=".json,application/json" onchange="impB(this)" hidden></label></div>
- <div id=bkm></div>`}
+ <div id=bkm></div>
+ <h3>Copia automática</h3>
+ <div class="tgl ${a.on?'on':''}" onclick="setAO(${!a.on})" role=switch aria-checked="${a.on}"><span>Crear copia de seguridad automáticamente</span><i></i></div>
+ ${a.on?`<div class=seg>${AFO.map(([k,l])=>`<button class="${a.f===k?'on':''}" onclick="setAF('${k}')">${l}</button>`).join('')}</div>
+ <p class=mu>${AINFO[a.f]} Última: <b>${a.last||'—'}</b>. Cuando se crea una, la app te avisa en la pantalla principal y en las notificaciones 🔔 para que la guardes como archivo con un toque.</p>`:'<p class=mu>Actívala para elegir cada cuánto se crea la copia: diariamente, semanalmente o mensualmente.</p>'}
+ ${sn.length?`<h3>Copias guardadas en la app</h3>${sn.map((x,i)=>`<div class=cp><span><b>${x.f}</b> · ${x.n} bodegas${x.l?' · '+esc(x.l):''}</span><button onclick="dlSnap(${i})" aria-label="Descargar copia">⬇️</button><button onclick="rsSnap(${i})">Restaurar</button></div>`).join('')}<p class=mu>Estas copias viven dentro de la app: sirven si algo se borra o se importa mal, pero se pierden al desinstalar. Para reinstalar con seguridad, guarda el archivo con ⬇️.</p>`:''}`}
 const lastBk=()=>{try{return localStorage.getItem('inv-bk')||'nunca'}catch(e){return 'nunca'}},bkm=t=>{const e=$('#bkm');if(e)e.innerHTML=t},
  bkBad=t=>bkm(`<div class="ban bad">${t}</div>`);
+async function saveFile(txt,name){
+ const f=new File([txt],name,{type:'application/json'}),ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ if(ios&&navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Respaldo de inventario'});
+ else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+ try{localStorage.setItem('inv-bk',today())}catch(e){}}
 async function expB(){
- const name=`inventario-respaldo-${today()}.json`,f=new File([JSON.stringify({app:'inventario-bodega',v:1,fecha:new Date().toISOString(),db})],name,{type:'application/json'}),
-  ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
- try{
-  if(ios&&navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Respaldo de inventario'});
-  else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-  try{localStorage.setItem('inv-bk',today())}catch(e){}
+ const name=`inventario-respaldo-${today()}.json`;
+ try{await saveFile(JSON.stringify({app:'inventario-bodega',v:1,fecha:new Date().toISOString(),db}),name);notif('Copia manual exportada');
   bkm(`<div class="ban ok">✅ Copia exportada: <b>${name}</b>. Guárdala en un lugar seguro (Descargas, Drive, WhatsApp a ti mismo…).</div>`)
  }catch(e){if(!e||e.name!=='AbortError')bkBad('No se pudo exportar la copia.')}}
 async function impB(inp){
@@ -127,14 +190,15 @@ async function impB(inp){
  if(!ok)return bkBad('El archivo no tiene el formato de una copia de este inventario. No se cambió nada.');
  const it=x.b.reduce((a,b)=>a+b.p.length,0);
  if(!confirm(`Se reemplazarán TODOS los datos actuales (${db.b.length} bodegas) por los de la copia (${x.b.length} bodegas, ${it} ítems${d.fecha?', del '+String(d.fecha).slice(0,10):''}). ¿Continuar?`))return;
- x.b.forEach(b=>{b.cf=Array.isArray(b.cf)?b.cf:[]});db=x;cur=null;save();render();
+ snap('Antes de importar');x.b.forEach(b=>{b.cf=Array.isArray(b.cf)?b.cf:[]});db=x;cur=null;save();render();
  bkm(`<div class="ban ok">✅ Copia importada: ${x.b.length} bodegas y ${it} ítems.</div>`)}
 
 function render(){const h=$('#h'),m=$('#m');
  if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=vCfg();return}
+ if(ntf){h.style.display='none';h.innerHTML='';m.innerHTML=vNtf();markSeen();return}
  if(!cur){h.style.display='none';h.innerHTML='';
-  m.innerHTML=`<div class=sec><span class=ic>🔍</span><span class=tx><b>Buscar</b><small>Encuentra insumos, herramientas y bodegas</small></span><button class=ab onclick="cfg=true;render()" title="Configuración" aria-label="Configuración">${GEAR}</button></div><div class=sb><input type=search id=q placeholder="Buscar insumo, herramienta o bodega" value="${esc(qs)}" oninput="qs=this.value;doS()"><button type=button id=qc class=qc onclick="clrS()" aria-label="Borrar búsqueda" title="Borrar búsqueda">✕</button></div><div id=sr></div><div class="sec nx"><span class=ic>📦</span><span class=tx><b>Mis bodegas</b><small>Crea, abre y organiza tus bodegas</small></span></div><form class="row crt" onsubmit="addB(event)"><input id=nb placeholder="Nombre de la bodega" required><select id=nt><option value=ins>📦 Insumos</option><option value=herr>🔧 Herramientas</option></select><button>Crear</button><small class=hint>📦 Insumos: consumo, conteo y reposición · 🔧 Herramientas: total y ajustes</small></form>`+
-  (db.b.length?db.b.map(b=>`<div class=bc onclick="openB('${b.id}')"><span class=bi>${b.t==='herr'?'🔧':'📦'}</span><span class=bt><b>${esc(b.n)}</b><small>${b.t==='herr'?'Herramientas':'Insumos'} · ${b.p.length} ítems</small></span><span class=ch>›</span></div>`).join(''):'<p class=mu>Aún no hay bodegas. Crea la primera.</p>');doS();return}
+  m.innerHTML=`${bkBan()}<div class=top><div class="sec c"><span class=tx><b>Buscar</b></span></div><button class=tbox onclick="cfg=true;render()" title="Configuración" aria-label="Configuración">${GEAR}</button><button class=tbox onclick="ntf=true;render()" title="Notificaciones" aria-label="Notificaciones">${BELL}${bellBadge()}</button></div><div class=sb><input type=search id=q placeholder="Buscar insumo, herramienta o bodega" value="${esc(qs)}" oninput="qs=this.value;doS()"><button type=button id=qc class=qc onclick="clrS()" aria-label="Borrar búsqueda" title="Borrar búsqueda">✕</button></div><div id=sr></div><div class="sec nx"><span class=ic>📦</span><span class=tx><b>Mis bodegas</b><small>Crea, abre y organiza tus bodegas</small></span></div><form class="row crt" onsubmit="addB(event)"><input id=nb placeholder="Nombre de la bodega" required><select id=nt><option value=ins>📦 Insumos</option><option value=herr>🔧 Herramientas</option></select><button>Crear</button><small class=hint>📦 Insumos: consumo, conteo y reposición · 🔧 Herramientas: total y ajustes</small></form>`+
+  (db.b.length?db.b.map(b=>`<div class=bc onclick="openB('${b.id}')"><span class=bi>${b.t==='herr'?'🔧':'📦'}</span><span class=bt><b>${esc(b.n)}</b></span><span class=cnt title="Cantidad">${b.p.length}</span><span class=ch>›</span></div>`).join(''):'<p class=mu>Aún no hay bodegas. Crea la primera.</p>');doS();return}
  const b=B();h.style.display='none';h.innerHTML='';
  const hd=`<div class=sec><button class=ic onclick="cur=null;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>${esc(b.n)}</b><small>${b.t==='herr'?'🔧 Herramientas':'📦 Insumos'} · ${b.p.length} ítems</small></span><button class=ab onclick="renB()" title="Renombrar bodega" aria-label="Renombrar bodega">${PEN}</button><button class="ab del" onclick="delB()" title="Eliminar bodega" aria-label="Eliminar bodega">${TR}</button></div>`;
  const T=b.t==='herr'?[['res','Resumen',vResH],['aj','Ajustes',vAj],['inf','Informe',vInf]]:[['res','Resumen',vRes],['cnt','Conteo',vCnt],['rep','Reposición',vRepo],['inf','Informe',vInf]];
@@ -184,21 +248,27 @@ function vRepo(b){
  <p class=mu>La fecha se guarda sola (hoy: ${today()}). La reposición, 1 vez al mes, se suma al stock inicial.</p>
  <div class=sc><table><tr><th>Fecha<th>Producto<th>Cantidad<th></tr>${rows}</table></div>`}
 
-const formP=b=>`<form class=row onsubmit="addP(event)"><input id=pn placeholder="${b.t==='herr'?'Herramienta':'Producto'}" required><select id=pu><option value=unidad>Unidad</option><option value=kit>Kit</option></select><input id=pi type=number min=0 step=any placeholder="${b.t==='herr'?'Cantidad total':'Cant. inicial'}" required>${b.t==='herr'?'':'<input id=pm type=number min=0 step=any placeholder="Mínimo (opcional)">'}<button>Agregar</button></form>`;
+const formP=b=>{const h=b.t==='herr';return `<form class=row onsubmit="addP(event)"><input id=pn placeholder="${h?'Herramienta':'Producto'}" required><select id=pu><option value=unidad>Unidad</option><option value=kit>Kit</option></select>${h?'<input id=pi placeholder="Cantidad (ej: 5 o Varios)" required><input id=pl placeholder="📍 ¿Dónde está guardado? (ej: Estante 3)">':'<input id=pi type=number min=0 step=any placeholder="Cant. inicial" required><input id=pm type=number min=0 step=any placeholder="Mínimo (opcional)">'}<button>Agregar</button></form>`};
 function vResH(b){
- const r=b.p.map(p=>`<tr><td>${esc(p.n)} <small>(${p.u||'unidad'})</small><td><b>${stock(b,p)}</b><td>${trb(`delP('${p.id}')`)}</tr>`).join('');
+ const r=b.p.map(p=>`<tr><td>${esc(p.n)} <small>(${p.u||'unidad'})</small>${p.l?`<br><small>📍 ${esc(p.l)}</small>`:''}<td><b>${qd(b,p)}</b><td>${trb(`delP('${p.id}')`)}</tr>`).join('');
  return `${formP(b)}<div class=sc><table><tr><th>Herramienta<th>Total<th></tr>${r}</table></div>
- <p class=mu>Para agregar, quitar o cambiar un nombre usa Ajustes (queda registrado con su motivo).</p>`}
+ <p class=mu>Para agregar, quitar, cambiar nombre, ubicación o cantidad usa Ajustes (queda registrado con su motivo).</p>`}
 function vAj(b){
  if(!b.p.length)return '<p class=mu>Agrega herramientas primero en Resumen.</p>';
- const run=runMap(b),rows=b.mov.map(m=>({k:key(m),h:`<tr><td>${m.f} ${m.h}<td>${esc(pn(b,m.p))}<td>${m.t==='in'?'+':'−'}${m.q}<td>${esc(m.o)}<td>${run[m.id]}<td>${trb(`delM('${m.id}')`)}</tr>`})).concat((b.tl||[]).map(t=>({k:t.f+t.h,h:`<tr><td>${t.f} ${t.h}<td>${esc(pn(b,t.p))}<td>${t.rn?`Nombre: ${esc(t.rn[0])} → ${esc(t.rn[1])}`:`Total ${t.a} → ${t.n}`}<td>${esc(t.o)}<td>–<td></tr>`}))).sort((x,y)=>y.k.localeCompare(x.k)).slice(0,80).map(x=>x.h).join('');
- return `<form onsubmit="addA(event)"><div class=row><select id=ap>${b.p.map(p=>`<option value="${p.id}">${esc(p.n)} (total ${stock(b,p)})</option>`).join('')}</select><select id=at onchange="tg()"><option value=out>Quitar (se ocupó / falta)</option><option value=in>Agregar (llegó / devuelto)</option><option value=ren>Cambiar nombre</option></select><input id=aq type=number min=0 step=any placeholder="Cantidad" required><input id=an placeholder="Nuevo nombre" style="display:none"></div>
+ const run=runMap(b),rows=b.mov.map(m=>({k:key(m),h:`<tr><td>${m.f} ${m.h}<td>${esc(pn(b,m.p))}<td>${m.t==='in'?'+':'−'}${m.q}<td>${esc(m.o)}<td>${run[m.id]}<td>${trb(`delM('${m.id}')`)}</tr>`})).concat((b.tl||[]).map(t=>({k:t.f+t.h,h:`<tr><td>${t.f} ${t.h}<td>${esc(pn(b,t.p))}<td>${tlT(t)}<td>${esc(t.o)}<td>–<td></tr>`}))).sort((x,y)=>y.k.localeCompare(x.k)).slice(0,80).map(x=>x.h).join('');
+ return `<form onsubmit="addA(event)"><div class=row><select id=ap>${b.p.map(p=>`<option value="${p.id}">${esc(p.n)} (total ${qd(b,p)})</option>`).join('')}</select><select id=at onchange="tg()"><option value=out>Quitar (se ocupó / falta)</option><option value=in>Agregar (llegó / devuelto)</option><option value=ren>Cambiar nombre</option><option value=loc>Cambiar ubicación</option><option value=cq>Cambiar cantidad (número o texto)</option></select><input id=aq type=number min=0 step=any placeholder="Cantidad" required><input id=an placeholder="Nuevo nombre" style="display:none"></div>
  <div class=row><input id=ao placeholder="Motivo: ¿por qué o para qué se ocupó?" required></div><button class=big>Registrar ajuste</button></form>
  <p class=mu>La fecha y la hora se guardan solas. El motivo queda anotado para saber por qué falta algo.</p>
  <div class=sc><table><tr><th>Fecha<th>Herramienta<th>Cambio<th>Motivo<th>Quedó<th></tr>${rows}</table></div>`}
-function tg(){const r=$('#at').value==='ren';$('#aq').style.display=r?'none':'';$('#aq').required=!r;$('#an').style.display=r?'':'none';$('#an').required=r}
-function addA(e){e.preventDefault();const b=B(),p=b.p.find(x=>x.id===$('#ap').value),t=$('#at').value,o=$('#ao').value.trim();
- if(t==='ren'){const n=$('#an').value.trim();if(!n)return;(b.tl=b.tl||[]).push({id:uid(),f:today(),h:hh(),p:p.id,rn:[p.n,n],o});p.n=n;save();render();return}
+function tg(){const t=$('#at').value,x=['ren','loc','cq'].includes(t);$('#aq').style.display=x?'none':'';$('#aq').required=!x;const a=$('#an');a.style.display=x?'':'none';a.required=x;a.placeholder={ren:'Nuevo nombre',loc:'Nueva ubicación (dónde está guardado)',cq:'Nueva cantidad (número o texto, ej: Varios)'}[t]||''}
+function addA(e){e.preventDefault();const b=B(),p=b.p.find(x=>x.id===$('#ap').value),t=$('#at').value,o=$('#ao').value.trim(),lg=x=>(b.tl=b.tl||[]).push({id:uid(),f:today(),h:hh(),p:p.id,o,...x});
+ if(t==='ren'){const n=$('#an').value.trim();if(!n)return;lg({rn:[p.n,n]});p.n=n;save();render();return}
+ if(t==='loc'){const n=$('#an').value.trim();if(!n)return;lg({lc:[p.l||'—',n]});p.l=n;save();render();return}
+ if(t==='cq'){const raw=$('#an').value.trim();if(!raw)return;const old=p.txt?p.txt:String(stock(b,p));
+  if(/^\d+([.,]\d+)?$/.test(raw)){const N=+raw.replace(',','.'),d=+(N-stock(b,p)).toFixed(2);if(d)b.mov.push({id:uid(),f:today(),h:hh(),p:p.id,t:d>0?'in':'out',q:Math.abs(d),r:'',o});if(p.txt){lg({cq:[old,String(N)]});delete p.txt}}
+  else{lg({cq:[old,raw]});p.txt=raw}
+  save();render();return}
+ if(p.txt){alert(`La cantidad de esta herramienta está en texto ("${p.txt}"). Usa "Cambiar cantidad" para modificarla.`);return}
  const q=+$('#aq').value,s=stock(b,p);
  if(!(q>0))return;if(t==='out'&&q>s){alert(`Solo hay ${s}`);return}
  b.mov.push({id:uid(),f:today(),h:hh(),p:p.id,t,q,r:'',o});save();render()}
@@ -217,17 +287,17 @@ function saveE(e){e.preventDefault();const b=B(),p=b.p.find(x=>x.id===editing),n
   if(!o){alert('Indica el motivo del cambio de cantidad');return}
   (b.tl=b.tl||[]).push({id:uid(),f:today(),h:hh(),p:p.id,a:p.ini,n,o});p.ini=n}
  p.n=$('#en').value.trim();p.u=$('#eu').value;if($('#em'))p.min=+$('#em').value||0;editing=null;save();render()}
-const tlH=(b,mo)=>{const r=(b.tl||[]).filter(t=>t.f>=mo+'-01'&&t.f<=mo+'-31').map(t=>`<tr><td>${t.f}<td>${esc(pn(b,t.p))}<td>${t.rn?`Nombre: ${esc(t.rn[0])} → ${esc(t.rn[1])}`:`${t.a} → ${t.n}`}<td>${esc(t.o)}</tr>`).join('');
+const tlH=(b,mo)=>{const r=(b.tl||[]).filter(t=>t.f>=mo+'-01'&&t.f<=mo+'-31').map(t=>`<tr><td>${t.f}<td>${esc(pn(b,t.p))}<td>${tlT(t)}<td>${esc(t.o)}</tr>`).join('');
  return r?`<h3>Cambios de cantidad inicial</h3><table><tr><th>Fecha<th>Producto<th>Cantidad<th>Motivo</tr>${r}</table>`:''};
 function repHerr(b,mo){const s=mo+'-01',e=mo+'-31',run=runMap(b),inM=m=>m.f>=s&&m.f<=e;
  const d=b.p.map(p=>{const ms=b.mov.filter(m=>m.p===p.id&&inM(m)).sort((x,y)=>key(x).localeCompare(key(y))),q=t=>+ms.filter(m=>m.t===t).reduce((a,m)=>a+m.q,0).toFixed(2),h=stockAt(b,p,e);
   return {p,ms,qo:q('out'),qi:q('in'),h,f:Math.max(0,+(p.ini-h).toFixed(2))}});
- const sum=d.map(x=>`<tr><td>${esc(x.p.n)} <small>(${x.p.u||'unidad'})</small><td>${+(x.h+x.qo-x.qi).toFixed(2)}<td>${x.qo}<td>${x.qi}<td><b>${x.h}</b></tr>`).join('');
+ const sum=d.map(x=>`<tr><td>${esc(x.p.n)} <small>(${x.p.u||'unidad'})</small><td>${x.p.txt?esc(x.p.txt):+(x.h+x.qo-x.qi).toFixed(2)}<td>${x.p.txt?'–':x.qo}<td>${x.p.txt?'–':x.qi}<td><b>${x.p.txt?esc(x.p.txt):x.h}</b><td>${esc(x.p.l||'')}</tr>`).join('');
  const det=d.filter(x=>x.ms.length).map(x=>`<h3>${esc(x.p.n)}</h3><table><tr><th>Fecha<th>Hora<th>Cambio<th>Motivo<th>Quedó</tr>${x.ms.map(m=>`<tr><td>${m.f}<td>${m.h}<td>${m.t==='in'?'+':'−'}${m.q}<td>${esc(m.o)}<td>${run[m.id]}</tr>`).join('')}</table>`).join('')||'<p><small>No hay ajustes en este mes.</small></p>';
- const tl=(b.tl||[]).filter(inM).map(t=>`<tr><td>${t.f}<td>${esc(pn(b,t.p))}<td>${t.rn?`Nombre: ${esc(t.rn[0])} → ${esc(t.rn[1])}`:`${t.a} → ${t.n}`}<td>${esc(t.o)}</tr>`).join('');
+ const tl=(b.tl||[]).filter(inM).map(t=>`<tr><td>${t.f}<td>${esc(pn(b,t.p))}<td>${tlT(t)}<td>${esc(t.o)}</tr>`).join('');
  return `<div class=rp><h2>${esc(b.n)}</h2><small>Informe de herramientas · ${mo} · generado el ${today()}</small>
- <h3>Estado de la bodega</h3><table><tr><th>Herramienta<th>Total al inicio<th>Quitado en el mes<th>Agregado en el mes<th>Total al cierre</tr>${sum}</table>
- <h3>Detalle de ajustes y motivos</h3>${det}${tl?`<h3>Cambios de total y de nombre</h3><table><tr><th>Fecha<th>Herramienta<th>Cambio<th>Motivo</tr>${tl}</table>`:''}</div>`}
+ <h3>Estado de la bodega</h3><table><tr><th>Herramienta<th>Total al inicio<th>Quitado en el mes<th>Agregado en el mes<th>Total al cierre<th>Ubicación</tr>${sum}</table>
+ <h3>Detalle de ajustes y motivos</h3>${det}${tl?`<h3>Cambios de nombre, ubicación y cantidad</h3><table><tr><th>Fecha<th>Herramienta<th>Cambio<th>Motivo</tr>${tl}</table>`:''}</div>`}
 const entH=(b,mo)=>{const r=b.mov.filter(m=>m.t==='in'&&m.f>=mo+'-01'&&m.f<=mo+'-31').sort((x,y)=>key(x).localeCompare(key(y))).map(m=>`<tr><td>${m.f}<td>${m.h}<td>${esc(pn(b,m.p))}<td>+${m.q}<td>${esc(m.r)}</tr>`).join('');
  return `<h3>Detalle de reposiciones</h3>${r?`<table><tr><th>Fecha<th>Hora<th>Producto<th>Cantidad<th>Detalle</tr>${r}</table>`:'<p><small>No hay reposiciones en este mes.</small></p>'}`};
 const rep2=(b,mo)=>b.t==='herr'?repHerr(b,mo):repHTML(b,mo);
@@ -251,7 +321,10 @@ function addB(e){e.preventDefault();db.b.push({id:uid(),n:$('#nb').value.trim(),
 function openB(id){cur=id;tab='res';render()}
 function renB(){const b=B(),n=(prompt('Nuevo nombre de la bodega',b.n)||'').trim();if(n&&n!==b.n){b.n=n;save();render()}}
 function delB(){if(confirm('¿Eliminar esta bodega y todos sus datos?')){db.b=db.b.filter(x=>x.id!==cur);cur=null;save();render()}}
-function addP(e){e.preventDefault();B().p.push({id:uid(),n:$('#pn').value.trim(),u:$('#pu').value,ini:+$('#pi').value,min:+(($('#pm')||{}).value)||0});save();render()}
+function addP(e){e.preventDefault();const b=B(),o={id:uid(),n:$('#pn').value.trim(),u:$('#pu').value,ini:0,min:0};
+ if(b.t==='herr'){const raw=$('#pi').value.trim(),l=($('#pl')||{}).value||'';if(/^\d+([.,]\d+)?$/.test(raw))o.ini=+raw.replace(',','.');else o.txt=raw;if(l.trim())o.l=l.trim()}
+ else{o.ini=+$('#pi').value;o.min=+(($('#pm')||{}).value)||0}
+ b.p.push(o);save();render()}
 function delP(id){if(confirm('¿Eliminar producto?')){const b=B();b.p=b.p.filter(p=>p.id!==id);save();render()}}
 
 const hh=()=>new Date().toTimeString().slice(0,5);
@@ -260,7 +333,8 @@ function addR(e){e.preventDefault();const b=B(),q=+$('#rq').value;if(!(q>0))retu
  b.mov.push({id:uid(),f:today(),h:hh(),p:$('#rp').value,t:'in',q,r:'Reposición',o:''});save();render()}
 function delM(id){const b=B();b.mov=b.mov.filter(m=>m.id!==id);msg='';save();render()}
 
-render();
+autoBk();render();
+const tick=()=>{if(autoBk()&&!cur)render()};document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setInterval(tick,30*60*1000);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>
