@@ -117,7 +117,7 @@ const today=()=>new Date().toLocaleDateString('sv'),B=()=>db.b.find(x=>x.id===cu
 const W=b=>[...b.sem].sort((x,y)=>x.f.localeCompare(y.f)),pn=(b,id)=>(b.p.find(p=>p.id===id)||{n:'(eliminado)'}).n;
 const key=m=>m.f+m.h,EMPTY='<p class=mu>Agrega productos primero en Resumen.</p>';
 const TR='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>',trb=f=>`<button class=tr onclick="${f}" title="Eliminar" aria-label="Eliminar">${TR}</button>`;
-let nbOpen=false,nbType='ins',updReady=false,ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
+let updAvail='',updNo=false,lastChk=0,nbOpen=false,nbType='ins',updReady=false,ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
 
 // Stock = inicial + reposiciones (entradas) − retiros (salidas), hasta la fecha d (opcional)
 function stockAt(b,p,d){let q=p.ini;b.mov.forEach(m=>{if(m.p===p.id&&(!d||m.f<=d))q+=m.t==='in'?m.q:-m.q});return +q.toFixed(2)}
@@ -149,7 +149,10 @@ if(mq.addEventListener)mq.addEventListener('change',()=>{if(UI.m==='auto')applyU
 applyUI();
 function setUI(k,v){UI[k]=v;try{localStorage.setItem('inv-ui',JSON.stringify(UI))}catch(e){}applyUI();render()}
 // AL ENTREGAR UNA VERSIÓN NUEVA: subir APP_V, agregar su entrada arriba en CHANGES y subir la caché en sw.js
-const APP_V='1.9',CHANGES=[
+const APP_V='1.10',CHANGES=[
+ {v:'1.10',f:'2026-11-17',t:'El botón de actualizar solo aparece si hay una actualización',d:[
+  'Configuración: el botón "Actualizar app ahora" ahora solo se muestra cuando hay una versión nueva disponible.',
+  'La app revisa si hay una versión nueva al abrirse, al volver a ella y al entrar a Configuración, y avisa en la pantalla principal.']},
  {v:'1.9',f:'2026-11-17',t:'Lista de bodegas e icono nuevo',d:[
   'Bodegas: ahora se listan numeradas, con su icono, nombre, cantidad de ítems y estado (OK o alertas de insumos con stock bajo de 7).',
   'Icono nuevo de la app, dentro de la app y al instalarla: bodega con una B de fondo y un portapapeles. Para ver el icono nuevo en la pantalla de inicio hay que reinstalar la app.']},
@@ -184,6 +187,11 @@ function chkUpd(){let prev=null,has=false;try{prev=localStorage.getItem('inv-ver
  if(prev===APP_V)return;
  if(prev||has){const c=CHANGES.find(x=>x.v===APP_V);notif(`Versión ${APP_V}${c?': '+c.t:''}`,'up',c?c.d:[]);try{localStorage.setItem('inv-upd',APP_V)}catch(e){}}
  try{localStorage.setItem('inv-ver',APP_V)}catch(e){}}
+async function chkNew(force){
+ if(!navigator.onLine||(!force&&Date.now()-lastChk<60000))return;lastChk=Date.now();
+ try{const r=await fetch('index.html?v='+Date.now(),{cache:'no-store'});if(!r.ok)return;
+  const m=(await r.text()).match(/const APP_V='([^']+)'/),v=m&&m[1]!==APP_V?m[1]:'';
+  if(v!==updAvail){updAvail=v;if(!v)updNo=false;if(!cur&&!ntf)render()}}catch(e){}}
 function goTo(u){location.replace(u)}
 async function applyUpd(bt){
  if(bt&&bt.tagName==='BUTTON'){bt.textContent='Actualizando…';bt.disabled=true}
@@ -197,7 +205,7 @@ async function applyUpd(bt){
 function clrUpd(){try{localStorage.removeItem('inv-upd')}catch(e){}}
 const updBan=()=>{let u='';try{u=localStorage.getItem('inv-upd')||''}catch(e){}if(u!==APP_V)return '';const c=CHANGES.find(x=>x.v===APP_V);
   return `<div class="ban ok"><b>✨ App actualizada a la versión ${APP_V}</b>${c?`<br>${esc(c.t)}`:''}<div class=bk><button onclick="ntf=true;clrUpd();render()">Ver novedades</button><button class=imp onclick="clrUpd();render()">Cerrar</button></div></div>`},
- rldBan=()=>updReady?`<div class="ban ok"><b>🔄 Actualización lista</b><br>Reinicia la app para usar la versión nueva.<div class=bk><button onclick="applyUpd(this)">Reiniciar ahora</button><button class=imp onclick="updReady=false;render()">Después</button></div></div>`:'';
+ rldBan=()=>(updReady||updAvail)&&!updNo?`<div class="ban ok"><b>🔄 Actualización disponible</b><br>${updAvail?'Versión '+esc(updAvail)+' lista para usar.':'Hay una versión nueva lista para usar.'}<div class=bk><button onclick="applyUpd(this)">Actualizar ahora</button><button class=imp onclick="updNo=true;render()">Después</button></div></div>`:'';
 const AFO=[['d','Diariamente'],['w','Semanalmente'],['m','Mensualmente']],AFN={d:'diaria',w:'semanal',m:'mensual'},
  AINFO={d:'Se crea una copia una vez al día, al abrir la app.',w:'Se crea una copia cada 7 días, al abrir la app.',m:'Se crea una copia una vez al mes, al abrir la app.'},
  AK='inv-auto',SK='inv-snaps',NK='inv-notif',NS='inv-notif-seen',
@@ -262,7 +270,7 @@ function vCfg(){
  <div class=bk><label class=imp>⬆️ Cargar copia desde archivo<input type=file accept=".json,application/json" onchange="impB(this)" hidden></label></div>
  <div id=bkm></div>
  <h3>Acerca de</h3><p class=mu>Versión de la app: <b>${APP_V}</b>. Cada vez que la app se actualiza, te avisamos con los detalles en la campana 🔔.</p>
- <div class=bk><button class="imp" onclick="applyUpd(this)">🔄 Actualizar app ahora</button></div><p class=mu>Si la app no se actualiza sola, este botón la recarga con los archivos más nuevos. Tus datos no se borran.</p>`}
+ ${updReady||updAvail?`<div class=bk><button class="imp" onclick="applyUpd(this)">🔄 Actualizar app ahora</button></div><p class=mu>Hay una versión nueva${updAvail?' ('+esc(updAvail)+')':''}. Al actualizar, la app se recarga con los archivos más nuevos. Tus datos no se borran.</p>`:''}`}
 const lastBk=()=>{try{return localStorage.getItem('inv-bk')||'nunca'}catch(e){return 'nunca'}},bkm=t=>{const e=$('#bkm');if(e)e.innerHTML=t},
  bkBad=t=>bkm(`<div class="ban bad">${t}</div>`);
 async function saveFile(txt,name){
@@ -292,7 +300,7 @@ function homeV(){
   foot=`<div class=foot><span>© Bodega Inventario</span><span class=vp>Versión ${APP_V}</span></div>`;
  return `${rldBan()}${updBan()}${bkBan()}${hdr}<div id=sr></div>${bar}${form}${list}${emp}${foot}`}
 function render(){const h=$('#h'),m=$('#m');
- if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=vCfg();return}
+ if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=vCfg();chkNew();return}
  if(ntf){h.style.display='none';h.innerHTML='';m.innerHTML=vNtf();markSeen();return}
  if(!cur){h.style.display='none';h.innerHTML='';
   m.innerHTML=homeV();doS();return}
@@ -431,9 +439,9 @@ function addR(e){e.preventDefault();const b=B(),q=+$('#rq').value;if(!(q>0))retu
 function delM(id){const b=B();b.mov=b.mov.filter(m=>m.id!==id);msg='';save();render()}
 
 if(/[?&]r=\d+/.test(location.search))history.replaceState(null,'',location.pathname+location.hash);
-chkUpd();autoBk();render();
-if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){updReady=true;if(!cur&&!cfg&&!ntf)render()}})}
-const tick=()=>{if(autoBk()&&!cur)render()};document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setInterval(tick,30*60*1000);
+chkUpd();autoBk();render();setTimeout(chkNew,2500);
+if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){updReady=true;updNo=false;if(!cur&&!cfg&&!ntf)render()}})}
+const tick=()=>{chkNew();if(autoBk()&&!cur)render()};document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setInterval(tick,30*60*1000);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>

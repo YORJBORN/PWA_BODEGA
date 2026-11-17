@@ -1,4 +1,4 @@
-const C='inv-v33',A=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
+const C='inv-v34',A=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>Promise.all(A.map(u=>fetch(new Request(u,{cache:'reload'})).then(r=>{if(!r.ok)throw new Error(u);return c.put(u,r)}))))
  .then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x))))));
