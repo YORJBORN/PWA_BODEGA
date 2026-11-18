@@ -117,7 +117,7 @@ const today=()=>new Date().toLocaleDateString('sv'),B=()=>db.b.find(x=>x.id===cu
 const W=b=>[...b.sem].sort((x,y)=>x.f.localeCompare(y.f)),pn=(b,id)=>(b.p.find(p=>p.id===id)||{n:'(eliminado)'}).n;
 const key=m=>m.f+m.h,EMPTY='<p class=mu>Agrega productos primero en Resumen.</p>';
 const TR='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>',trb=f=>`<button class=tr onclick="${f}" title="Eliminar" aria-label="Eliminar">${TR}</button>`;
-let updAvail='',updNo=false,lastChk=0,nbOpen=false,nbType='ins',updReady=false,ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
+let updAvail='',lastChk=0,lastAct=Date.now(),used=false,hiddenAt=0,t0=Date.now(),nbOpen=false,nbType='ins',updReady=false,ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
 
 // Stock = inicial + reposiciones (entradas) − retiros (salidas), hasta la fecha d (opcional)
 function stockAt(b,p,d){let q=p.ini;b.mov.forEach(m=>{if(m.p===p.id&&(!d||m.f<=d))q+=m.t==='in'?m.q:-m.q});return +q.toFixed(2)}
@@ -149,7 +149,13 @@ if(mq.addEventListener)mq.addEventListener('change',()=>{if(UI.m==='auto')applyU
 applyUI();
 function setUI(k,v){UI[k]=v;try{localStorage.setItem('inv-ui',JSON.stringify(UI))}catch(e){}applyUI();render()}
 // AL ENTREGAR UNA VERSIÓN NUEVA: subir APP_V, agregar su entrada arriba en CHANGES y subir la caché en sw.js
-const APP_V='1.10',CHANGES=[
+const APP_V='1.12',CHANGES=[
+ {v:'1.12',f:'2026-11-18',t:'Actualización sin interrumpir',d:[
+  'Si estás usando la app, ya no se reinicia sola: te avisa que hay una versión nueva (en la pantalla principal y en la campana 🔔) y la instala cuando termines de usarla.',
+  'Se considera que terminaste cuando sales de la app un rato o la dejas sin tocar 2 minutos. Si recién abres la app, se actualiza enseguida.']},
+ {v:'1.11',f:'2026-11-18',t:'Actualización automática',d:[
+  'La app se actualiza sola cuando hay una versión nueva, sin botones. Al terminar te llega esta notificación con los detalles.',
+  'Se quitó el botón "Actualizar app ahora" y el aviso con botones.']},
  {v:'1.10',f:'2026-11-17',t:'El botón de actualizar solo aparece si hay una actualización',d:[
   'Configuración: el botón "Actualizar app ahora" ahora solo se muestra cuando hay una versión nueva disponible.',
   'La app revisa si hay una versión nueva al abrirse, al volver a ella y al entrar a Configuración, y avisa en la pantalla principal.']},
@@ -185,16 +191,30 @@ const APP_V='1.10',CHANGES=[
   'Copia automática: ahora se puede elegir Diariamente, Semanalmente o Mensualmente.']}];
 function chkUpd(){let prev=null,has=false;try{prev=localStorage.getItem('inv-ver');has=!!localStorage.getItem(K)}catch(e){}
  if(prev===APP_V)return;
+ try{localStorage.removeItem('inv-aupd');localStorage.removeItem('inv-pendn');localStorage.setItem(NK,JSON.stringify(NLOG().filter(x=>x.k!=='pend')))}catch(e){}
  if(prev||has){const c=CHANGES.find(x=>x.v===APP_V);notif(`Versión ${APP_V}${c?': '+c.t:''}`,'up',c?c.d:[]);try{localStorage.setItem('inv-upd',APP_V)}catch(e){}}
  try{localStorage.setItem('inv-ver',APP_V)}catch(e){}}
 async function chkNew(force){
  if(!navigator.onLine||(!force&&Date.now()-lastChk<60000))return;lastChk=Date.now();
  try{const r=await fetch('index.html?v='+Date.now(),{cache:'no-store'});if(!r.ok)return;
   const m=(await r.text()).match(/const APP_V='([^']+)'/),v=m&&m[1]!==APP_V?m[1]:'';
-  if(v!==updAvail){updAvail=v;if(!v)updNo=false;if(!cur&&!ntf)render()}}catch(e){}}
+  if(v!==updAvail){updAvail=v;if(v&&!aupd())notePend(v);else if(!cur&&!ntf&&!cfg&&safeNow())render()}}catch(e){}}
 function goTo(u){location.replace(u)}
-async function applyUpd(bt){
- if(bt&&bt.tagName==='BUTTON'){bt.textContent='Actualizando…';bt.disabled=true}
+const safeNow=()=>{const e=document.activeElement;if(e&&/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName)&&e.type!=='file')return false;
+ return ![...document.querySelectorAll('#m input:not([type=file]),#m textarea')].some(i=>i.value&&String(i.value).trim())};
+function aupd(){
+ const t=updAvail||(updReady?'sw':'');if(!t)return false;
+ let a={};try{a=JSON.parse(localStorage.getItem('inv-aupd')||'{}')}catch(e){}
+ if(a.v===t&&(a.n>=3||Date.now()-a.t<600000))return false;
+ if(!((!used&&Date.now()-t0<15000)||Date.now()-lastAct>=120000))return false;
+ if(!safeNow())return false;
+ try{localStorage.setItem('inv-aupd',JSON.stringify({v:t,n:a.v===t?(a.n||0)+1:1,t:Date.now()}))}catch(e){}
+ applyUpd();return true}
+function notePend(v){let n='';try{n=localStorage.getItem('inv-pendn')||''}catch(e){}const k=v||'sw';
+ if(n!==k){try{localStorage.setItem('inv-pendn',k)}catch(e){}notif(`Hay una versión nueva${v?' ('+v+')':''}. Se instalará sola cuando termines de usar la app.`,'pend')}
+ if(!cur&&!ntf&&!cfg&&safeNow())render()}
+const pendBan=()=>updAvail||updReady?`<div class="ban ok"><b>🔄 Hay una versión nueva</b><br>Se instalará sola cuando termines de usar la app.</div>`:'';
+async function applyUpd(){
  try{
   if(navigator.onLine){
    if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()))}
@@ -204,8 +224,7 @@ async function applyUpd(bt){
  goTo(location.pathname+'?r='+Date.now())}
 function clrUpd(){try{localStorage.removeItem('inv-upd')}catch(e){}}
 const updBan=()=>{let u='';try{u=localStorage.getItem('inv-upd')||''}catch(e){}if(u!==APP_V)return '';const c=CHANGES.find(x=>x.v===APP_V);
-  return `<div class="ban ok"><b>✨ App actualizada a la versión ${APP_V}</b>${c?`<br>${esc(c.t)}`:''}<div class=bk><button onclick="ntf=true;clrUpd();render()">Ver novedades</button><button class=imp onclick="clrUpd();render()">Cerrar</button></div></div>`},
- rldBan=()=>(updReady||updAvail)&&!updNo?`<div class="ban ok"><b>🔄 Actualización disponible</b><br>${updAvail?'Versión '+esc(updAvail)+' lista para usar.':'Hay una versión nueva lista para usar.'}<div class=bk><button onclick="applyUpd(this)">Actualizar ahora</button><button class=imp onclick="updNo=true;render()">Después</button></div></div>`:'';
+  return `<div class="ban ok"><b>✨ App actualizada a la versión ${APP_V}</b>${c?`<br>${esc(c.t)}`:''}<div class=bk><button onclick="ntf=true;clrUpd();render()">Ver novedades</button><button class=imp onclick="clrUpd();render()">Cerrar</button></div></div>`};
 const AFO=[['d','Diariamente'],['w','Semanalmente'],['m','Mensualmente']],AFN={d:'diaria',w:'semanal',m:'mensual'},
  AINFO={d:'Se crea una copia una vez al día, al abrir la app.',w:'Se crea una copia cada 7 días, al abrir la app.',m:'Se crea una copia una vez al mes, al abrir la app.'},
  AK='inv-auto',SK='inv-snaps',NK='inv-notif',NS='inv-notif-seen',
@@ -219,7 +238,7 @@ const AFO=[['d','Diariamente'],['w','Semanalmente'],['m','Mensualmente']],AFN={d
  bkBan=()=>{const a=AUTO();return a.pend?`<div class="ban ok"><b>💾 Copia automática lista</b> (${a.last}). Guárdala como archivo para no perderla si reinstalas la app.<div class=bk><button onclick="pendSave()">⬇️ Guardar archivo</button><button class=imp onclick="pendNo()">Ahora no</button></div></div>`:''},
  BELL=IC('<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',2.2),
  NLOG=()=>{try{return JSON.parse(localStorage.getItem(NK)||'[]')}catch(e){return []}},
- notif=(m,k,d)=>{try{const L=[{id:uid(),t:Date.now(),f:today(),h:hh(),m,k,d},...NLOG()];localStorage.setItem(NK,JSON.stringify([...L.filter(x=>x.k==='up').slice(0,10),...L.filter(x=>x.k!=='up').slice(0,30)].sort((a,b)=>(b.t||0)-(a.t||0))))}catch(e){}},
+ notif=(m,k,d)=>{try{const L=[{id:uid(),t:Date.now(),f:today(),h:hh(),m,k,d},...NLOG()];localStorage.setItem(NK,JSON.stringify([...L.filter(x=>x.k==='up'||x.k==='pend').slice(0,10),...L.filter(x=>x.k!=='up'&&x.k!=='pend').slice(0,30)].sort((a,b)=>(b.t||0)-(a.t||0))))}catch(e){}},
  unseen=()=>{let s=0;try{s=+localStorage.getItem(NS)||0}catch(e){}return NLOG().filter(x=>x.t>s).length},
  markSeen=()=>{try{localStorage.setItem(NS,String(Date.now()))}catch(e){}},
  NDK='inv-ndis',NDIS=()=>{try{return JSON.parse(localStorage.getItem(NDK)||'[]')}catch(e){return []}},lkey=(b,p,q)=>`${b.id}:${p.id}:${q}`,
@@ -235,10 +254,10 @@ const SRCH=IC('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',2.4);
 function delN(id){try{localStorage.setItem(NK,JSON.stringify(NLOG().filter(x=>x.id!==id)))}catch(e){}render()}
 function disL(bid,pid){const b=db.b.find(x=>x.id===bid),p=b&&b.p.find(x=>x.id===pid);if(!p)return;const d=NDIS();d.push(lkey(b,p,stock(b,p)));try{localStorage.setItem(NDK,JSON.stringify(d.slice(-200)))}catch(e){}render()}
 function clrN(){if(!confirm('¿Borrar todas las notificaciones?'))return;try{localStorage.setItem(NK,'[]')}catch(e){}const d=NDIS();lowItems().forEach(({b,p,q})=>d.push(lkey(b,p,q)));try{localStorage.setItem(NDK,JSON.stringify(d.slice(-200)))}catch(e){}render()}
-function vNtf(){const L=NLOG(),lo=lowItems(),up=L.filter(x=>x.k==='up'),bk=L.filter(x=>x.k!=='up'),
+function vNtf(){const L=NLOG(),lo=lowItems(),U=x=>x.k==='up'||x.k==='pend',up=L.filter(U),bk=L.filter(x=>!U(x)),
  X=a=>`<button class=xd onclick="event.stopPropagation();${a}" aria-label="Eliminar notificación" title="Eliminar">✕</button>`;
  return `<div class=sec><button class=ic onclick="ntf=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Notificaciones</b></span>${L.length+lo.length?`<button class="ab del" onclick="clrN()" title="Borrar todas" aria-label="Borrar todas las notificaciones">${TR}</button>`:''}</div>
- ${up.length?`<h3>Actualizaciones de la app</h3>${up.map(x=>`<div class="nt up"><span class=ni>✨</span><span class=nx><b>${esc(x.m)}</b><small>${x.f} · ${x.h}</small>${x.d&&x.d.length?`<ul class=ul>${x.d.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:''}</span>${X(`delN('${x.id}')`)}</div>`).join('')}`:''}
+ ${up.length?`<h3>Actualizaciones de la app</h3>${up.map(x=>`<div class="nt up"><span class=ni>${x.k==='pend'?'🔄':'✨'}</span><span class=nx><b>${esc(x.m)}</b><small>${x.f} · ${x.h}</small>${x.d&&x.d.length?`<ul class=ul>${x.d.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:''}</span>${X(`delN('${x.id}')`)}</div>`).join('')}`:''}
  ${bk.length?`<h3>Copias de seguridad</h3>${bk.map(x=>`<div class=nt><span class=ni>💾</span><span class=nx><b>${esc(x.m)}</b><small>${x.f} · ${x.h}</small></span>${X(`delN('${x.id}')`)}</div>`).join('')}`:''}
  ${lo.length?`<h3>Insumos con stock bajo (menos de 7)</h3>${lo.map(({b,p,q})=>`<div class="nt low" onclick="ntf=false;openB('${b.id}')"><span class=ni>⚠️</span><span class=nx><b>${esc(p.n)}</b><small>${esc(b.n)} · quedan ${q}</small></span>${X(`disL('${b.id}','${p.id}')`)}</div>`).join('')}`:''}`}
 function snap(label){const L=SNAPS().filter(x=>label||x.l||x.f!==today()),x={f:today(),t:new Date().toISOString(),n:db.b.length,d:JSON.parse(JSON.stringify(db))};if(label)x.l=label;
@@ -269,8 +288,7 @@ function vCfg(){
  <p class=mu>${sn.length?'Estas copias viven dentro de la app: sirven si algo se borra o se importa mal, pero se pierden al desinstalar. Para reinstalar con seguridad, guarda el archivo con el botón ⬇️ de la copia y, ya reinstalada la app, cárgalo con el botón de abajo.':'Aún no hay copias guardadas. Activa la copia automática para que se cree una; entonces aparecerá aquí con su botón ⬇️ para guardarla como archivo. Si ya tienes un archivo de copia, cárgalo con el botón de abajo.'}</p>
  <div class=bk><label class=imp>⬆️ Cargar copia desde archivo<input type=file accept=".json,application/json" onchange="impB(this)" hidden></label></div>
  <div id=bkm></div>
- <h3>Acerca de</h3><p class=mu>Versión de la app: <b>${APP_V}</b>. Cada vez que la app se actualiza, te avisamos con los detalles en la campana 🔔.</p>
- ${updReady||updAvail?`<div class=bk><button class="imp" onclick="applyUpd(this)">🔄 Actualizar app ahora</button></div><p class=mu>Hay una versión nueva${updAvail?' ('+esc(updAvail)+')':''}. Al actualizar, la app se recarga con los archivos más nuevos. Tus datos no se borran.</p>`:''}`}
+ <h3>Acerca de</h3><p class=mu>Versión de la app: <b>${APP_V}</b>. Cuando hay una versión nueva, te avisa y se instala sola cuando terminas de usar la app; al terminar te llegan los detalles en la campana 🔔.</p>`}
 const lastBk=()=>{try{return localStorage.getItem('inv-bk')||'nunca'}catch(e){return 'nunca'}},bkm=t=>{const e=$('#bkm');if(e)e.innerHTML=t},
  bkBad=t=>bkm(`<div class="ban bad">${t}</div>`);
 async function saveFile(txt,name){
@@ -298,7 +316,7 @@ function homeV(){
    return `<div class=br onclick="openB('${b.id}')"><span class=bn>${i+1}.</span><span class="bi2 ${al?'al':''}">${b.t==='herr'?TOOL:WH}</span><span class=bt><b>${esc(b.n)}</b><small>Bodega</small></span><span class=bm><span class=bc2>${c} ${c===1?'ítem':'ítems'}</span>${al?`<span class="bs al">${WARN}${n} ${n===1?'alerta':'alertas'}</span>`:`<span class="bs ok">${OKI}OK</span>`}</span></div>`}).join('')}</div>`:'',
   emp=!db.b.length&&!nbOpen?`<div class=emp>${EMPTYSVG}<p>Organiza tus insumos y herramientas de almacenamiento.</p></div>`:'',
   foot=`<div class=foot><span>© Bodega Inventario</span><span class=vp>Versión ${APP_V}</span></div>`;
- return `${rldBan()}${updBan()}${bkBan()}${hdr}<div id=sr></div>${bar}${form}${list}${emp}${foot}`}
+ return `${pendBan()}${updBan()}${bkBan()}${hdr}<div id=sr></div>${bar}${form}${list}${emp}${foot}`}
 function render(){const h=$('#h'),m=$('#m');
  if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=vCfg();chkNew();return}
  if(ntf){h.style.display='none';h.innerHTML='';m.innerHTML=vNtf();markSeen();return}
@@ -440,8 +458,10 @@ function delM(id){const b=B();b.mov=b.mov.filter(m=>m.id!==id);msg='';save();ren
 
 if(/[?&]r=\d+/.test(location.search))history.replaceState(null,'',location.pathname+location.hash);
 chkUpd();autoBk();render();setTimeout(chkNew,2500);
-if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){updReady=true;updNo=false;if(!cur&&!cfg&&!ntf)render()}})}
-const tick=()=>{chkNew();if(autoBk()&&!cur)render()};document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setInterval(tick,30*60*1000);
+if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){updReady=true;if(!aupd())notePend('')}})}
+const tick=()=>{chkNew();if(autoBk()&&!cur&&safeNow())render()};['pointerdown','keydown','touchstart','input'].forEach(e=>addEventListener(e,()=>{lastAct=Date.now();used=true},{passive:true,capture:true}));
+document.addEventListener('visibilitychange',()=>{if(document.hidden){hiddenAt=Date.now();return}
+ if(hiddenAt&&Date.now()-hiddenAt>=30000){used=false;t0=Date.now();lastAct=Date.now();chkNew(true).then(aupd)}else tick()});setInterval(tick,30*60*1000);setInterval(aupd,15000);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>
