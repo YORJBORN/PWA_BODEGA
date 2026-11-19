@@ -84,6 +84,7 @@ html.dark .bs.al{color:#fca5a5}html.dark .bi2{color:#5eead4}html.dark .bi2.al{co
 .top .sec{cursor:pointer}.sec.c .pn{position:relative;z-index:1;flex:none;margin-left:8px;font-size:1.05rem;opacity:.85}
 .nt .xd{flex:none;align-self:flex-start;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--mu);font-size:1.1rem;line-height:1}
 .nt.up{align-items:flex-start}.nt .ul{margin:6px 0 0;padding-left:18px;font-size:.9rem}.nt .ul li{margin:2px 0}
+.lk{cursor:pointer;margin-top:18px}
 .cp{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:6px 0;background:var(--card);border:1px solid var(--bd);border-radius:12px}.cp span{flex:1;min-width:0}.cp button{padding:8px 10px;font-size:.9rem}
 .it .num{max-width:50%;text-align:right;overflow-wrap:anywhere}
 .bk{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.bk>*{flex:1 1 150px;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 10px;border-radius:12px;cursor:pointer;font:inherit;text-align:center;border:2px solid var(--ac)}.bk .imp{background:var(--card);color:var(--fg)}
@@ -117,7 +118,7 @@ const today=()=>new Date().toLocaleDateString('sv'),B=()=>db.b.find(x=>x.id===cu
 const W=b=>[...b.sem].sort((x,y)=>x.f.localeCompare(y.f)),pn=(b,id)=>(b.p.find(p=>p.id===id)||{n:'(eliminado)'}).n;
 const key=m=>m.f+m.h,EMPTY='<p class=mu>Agrega productos primero en Resumen.</p>';
 const TR='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>',trb=f=>`<button class=tr onclick="${f}" title="Eliminar" aria-label="Eliminar">${TR}</button>`;
-let updAvail='',lastChk=0,lastAct=Date.now(),used=false,hiddenAt=0,t0=Date.now(),nbOpen=false,nbType='ins',updReady=false,ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
+let cfgSub='',updAvail='',lastChk=0,lastAct=Date.now(),used=false,hiddenAt=0,t0=Date.now(),nbOpen=false,nbType='ins',updReady=false,ntf=false,cfg=false,qs='',hm=null,editing=null,msg='',draft={},cur=null,tab='res',rmo=today().slice(0,7);
 
 // Stock = inicial + reposiciones (entradas) − retiros (salidas), hasta la fecha d (opcional)
 function stockAt(b,p,d){let q=p.ini;b.mov.forEach(m=>{if(m.p===p.id&&(!d||m.f<=d))q+=m.t==='in'?m.q:-m.q});return +q.toFixed(2)}
@@ -149,7 +150,9 @@ if(mq.addEventListener)mq.addEventListener('change',()=>{if(UI.m==='auto')applyU
 applyUI();
 function setUI(k,v){UI[k]=v;try{localStorage.setItem('inv-ui',JSON.stringify(UI))}catch(e){}applyUI();render()}
 // AL ENTREGAR UNA VERSIÓN NUEVA: subir APP_V, agregar su entrada arriba en CHANGES y subir la caché en sw.js
-const APP_V='1.12',CHANGES=[
+const APP_V='1.13',CHANGES=[
+ {v:'1.13',f:'2026-11-18',t:'Configuración más ordenada',d:[
+  'Configuración: las opciones de copia de seguridad (automática, copias guardadas y cargar archivo) ahora están en su propia ventana; se entra tocando "Copia de seguridad".']},
  {v:'1.12',f:'2026-11-18',t:'Actualización sin interrumpir',d:[
   'Si estás usando la app, ya no se reinicia sola: te avisa que hay una versión nueva (en la pantalla principal y en la campana 🔔) y la instala cuando termines de usarla.',
   'Se considera que terminaste cuando sales de la app un rato o la dejas sin tocar 2 minutos. Si recién abres la app, se actualiza enseguida.']},
@@ -275,10 +278,15 @@ function rsSnap(i){const x=SNAPS()[i];if(!x)return;
  if(!confirm(`Se reemplazarán TODOS los datos actuales por la copia del ${x.f} (${x.n} bodegas). Antes se guardará una copia de lo actual. ¿Continuar?`))return;
  const d=x.d;snap('Antes de restaurar');d.b.forEach(b=>{b.cf=Array.isArray(b.cf)?b.cf:[]});db=d;cur=null;save();render();bkm(`<div class="ban ok">✅ Copia del ${x.f} restaurada.</div>`)}
 function vCfg(){
- const a=AUTO(),sn=SNAPS(),modes=[['auto','🌗','Automático'],['light','☀️','Claro'],['dark','🌙','Oscuro']],
+ const a=AUTO(),n=SNAPS().length,modes=[['auto','🌗','Automático'],['light','☀️','Claro'],['dark','🌙','Oscuro']],
   info={auto:'Automático: cambia solo entre claro y oscuro según el sistema de tu dispositivo.',light:'Siempre en modo claro.',dark:'Siempre en modo oscuro.'};
- return `<div class=sec><button class=ic onclick="cfg=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Configuración</b><small>Modo de la app y copias de seguridad</small></span></div>
+ return `<div class=sec><button class=ic onclick="cfg=false;render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Configuración</b><small>Modo de la app y copia de seguridad</small></span></div>
  <h3>Modo</h3><div class=seg>${modes.map(([k,i,l])=>`<button class="${UI.m===k?'on':''}" onclick="setUI('m','${k}')"><span>${i}</span>${l}</button>`).join('')}</div><p class=mu>${info[UI.m]}</p>
+ <div class="nt lk" onclick="cfgSub='bk';render()" role=button><span class=ni>💾</span><span class=nx><b>Copia de seguridad</b><small>${a.on?'Automática '+AFN[a.f]:'Automática desactivada'} · ${n} ${n===1?'copia guardada':'copias guardadas'}</small></span><span class=ch>›</span></div>
+ <h3>Acerca de</h3><p class=mu>Versión de la app: <b>${APP_V}</b>. Cuando hay una versión nueva, te avisa y se instala sola cuando terminas de usar la app; al terminar te llegan los detalles en la campana 🔔.</p>`}
+function vBk(){
+ const a=AUTO(),sn=SNAPS();
+ return `<div class=sec><button class=ic onclick="cfgSub='';render()" title="Volver" aria-label="Volver">${BACK}</button><span class=tx><b>Copia de seguridad</b></span></div>
  <h3>Copia automática</h3>
  <div class="tgl ${a.on?'on':''}" onclick="setAO(${!a.on})" role=switch aria-checked="${a.on}"><span>Crear copia de seguridad automáticamente</span><i></i></div>
  ${a.on?`<div class=seg>${AFO.map(([k,l])=>`<button class="${a.f===k?'on':''}" onclick="setAF('${k}')">${l}</button>`).join('')}</div>
@@ -287,8 +295,7 @@ function vCfg(){
  ${sn.map((x,i)=>`<div class=cp><span><b>${x.f}</b> · ${x.n} bodegas${x.l?' · '+esc(x.l):''}</span><button onclick="dlSnap(${i})" aria-label="Descargar copia">⬇️</button><button onclick="rsSnap(${i})">Restaurar</button></div>`).join('')}
  <p class=mu>${sn.length?'Estas copias viven dentro de la app: sirven si algo se borra o se importa mal, pero se pierden al desinstalar. Para reinstalar con seguridad, guarda el archivo con el botón ⬇️ de la copia y, ya reinstalada la app, cárgalo con el botón de abajo.':'Aún no hay copias guardadas. Activa la copia automática para que se cree una; entonces aparecerá aquí con su botón ⬇️ para guardarla como archivo. Si ya tienes un archivo de copia, cárgalo con el botón de abajo.'}</p>
  <div class=bk><label class=imp>⬆️ Cargar copia desde archivo<input type=file accept=".json,application/json" onchange="impB(this)" hidden></label></div>
- <div id=bkm></div>
- <h3>Acerca de</h3><p class=mu>Versión de la app: <b>${APP_V}</b>. Cuando hay una versión nueva, te avisa y se instala sola cuando terminas de usar la app; al terminar te llegan los detalles en la campana 🔔.</p>`}
+ <div id=bkm></div>`}
 const lastBk=()=>{try{return localStorage.getItem('inv-bk')||'nunca'}catch(e){return 'nunca'}},bkm=t=>{const e=$('#bkm');if(e)e.innerHTML=t},
  bkBad=t=>bkm(`<div class="ban bad">${t}</div>`);
 async function saveFile(txt,name){
@@ -309,7 +316,7 @@ async function impB(inp){
  bkm(`<div class="ban ok">✅ Copia importada: ${x.b.length} bodegas y ${it} ítems.</div>`)}
 
 function homeV(){
- const hdr=`<div class=hdr><img class=ap src="${APPIC}" alt="Mis Bodegas"><div class=sb><input type=search id=q placeholder="Buscar" value="${esc(qs)}" oninput="qs=this.value;doS()" aria-label="Buscar"><span id=ql class=ql>${SRCH}</span><button type=button id=qc class=qc onclick="clrS()" aria-label="Borrar búsqueda" title="Borrar búsqueda">✕</button></div><button class=tbox onclick="cfg=true;render()" title="Configuración" aria-label="Configuración">${GEAR}</button><button class=tbox onclick="ntf=true;render()" title="Notificaciones" aria-label="Notificaciones">${BELL}${bellBadge()}</button></div>`,
+ const hdr=`<div class=hdr><img class=ap src="${APPIC}" alt="Mis Bodegas"><div class=sb><input type=search id=q placeholder="Buscar" value="${esc(qs)}" oninput="qs=this.value;doS()" aria-label="Buscar"><span id=ql class=ql>${SRCH}</span><button type=button id=qc class=qc onclick="clrS()" aria-label="Borrar búsqueda" title="Borrar búsqueda">✕</button></div><button class=tbox onclick="cfgSub='';cfg=true;render()" title="Configuración" aria-label="Configuración">${GEAR}</button><button class=tbox onclick="ntf=true;render()" title="Notificaciones" aria-label="Notificaciones">${BELL}${bellBadge()}</button></div>`,
   bar=`<div class="sec mb"><b>Mis bodegas</b><button class=nb onclick="nbOpen=!nbOpen;render()" aria-expanded="${nbOpen}">Nueva bodega +</button></div>`,
   form=nbOpen?`<div class=tcards>${[['ins','📦','Insumos','Consumo y reposición.'],['herr','🔧','Herramientas','Total y ajustes.']].map(([k,i,n,d])=>`<button type=button class="tc ${nbType===k?'on':''}" onclick="nbType='${k}';render()"><span class=tn>${i} ${n}</span><small>${d}</small>${nbType===k?'<i class=ck>✓</i>':''}</button>`).join('')}</div><p class=hint2>Insumos: consumo, conteo y reposición · Herramientas: total y ajustes</p><form class="row crt" onsubmit="addB(event)"><input id=nb placeholder="Nombre de la bodega" required><button>Crear</button><button type=button class=ghost onclick="nbOpen=false;render()">Cancelar</button></form>`:'',
   list=db.b.length?`<div class=bl>${db.b.map((b,i)=>{const n=b.t==='herr'?0:b.p.filter(p=>stock(b,p)<7).length,al=n>0,c=b.p.length;
@@ -318,7 +325,7 @@ function homeV(){
   foot=`<div class=foot><span>© Bodega Inventario</span><span class=vp>Versión ${APP_V}</span></div>`;
  return `${pendBan()}${updBan()}${bkBan()}${hdr}<div id=sr></div>${bar}${form}${list}${emp}${foot}`}
 function render(){const h=$('#h'),m=$('#m');
- if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=vCfg();chkNew();return}
+ if(cfg){h.style.display='none';h.innerHTML='';m.innerHTML=cfgSub==='bk'?vBk():vCfg();chkNew();return}
  if(ntf){h.style.display='none';h.innerHTML='';m.innerHTML=vNtf();markSeen();return}
  if(!cur){h.style.display='none';h.innerHTML='';
   m.innerHTML=homeV();doS();return}
